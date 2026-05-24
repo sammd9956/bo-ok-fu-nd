@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 connectDB(); */
 import userRoute from './routes/userRoute.js';
 import fundRoute from './routes/fundRoute.js';
+import donationRoute from './routes/donationRoute.js';
 import campaignRoute from './routes/campaignRoute.js';
 import { errorMiddleware } from '../middleware/error.js';
 import cors from 'cors';
@@ -18,6 +19,7 @@ app.use(cookieParser());
 
 app.use("/api/v1/user", userRoute)
 app.use("/api/v1/fund", fundRoute)
+app.use("/api/v1/don", donationRoute)
 app.use("/api/v1/camp", campaignRoute)
 
 

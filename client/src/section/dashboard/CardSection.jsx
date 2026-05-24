@@ -81,7 +81,7 @@ const donationData = [
 ];
 
 
-const CardSection = ({totalRaised}) => {
+const CardSection = ({totalRaised, totalDonors}) => {
     const [checked, setChecked] = useState(false)
     const [openDialog, setOpenDialog] = useState(false);
     const [sortOrder, setSortOrder] = useState("asc");
@@ -118,7 +118,7 @@ const CardSection = ({totalRaised}) => {
 
             <div className='bg-white rounded-[20px] pt-9 pl-[38px] pr-[42px] pb-[54px] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]'>
                 <p className='text-xl font-poppins font-medium mb-[13px] text-black'>$ Total Raised</p>
-                <p className='text-[50px] font-poppins font-bold mb-[22px] text-black'>15</p>
+                <p className='text-[50px] font-poppins font-bold mb-[22px] text-black'>{totalDonors}</p>
                 <p className='text-[15px] font-poppins font-light mb-[11px] text-black'>Community members</p>
             </div>
 

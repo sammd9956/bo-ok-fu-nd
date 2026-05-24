@@ -6,15 +6,17 @@ import React, { useEffect, useState } from 'react'
 import creditCard from "@/assets/credit_card.png"
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
+import { server } from '@/constatnts/config'
 
 const ViewCampaign = () => {
-const [profileDets, setProfileDets] = useState(null)
+// const [profileDets, setProfileDets] = useState(null);
+const [campaign, setCampaign] = useState(null)
 const params = useParams();
-  const id = params.id;
+  const {uuid} = params;
 const intialState = {
-  donorId: id,
-  subDonorName: "",
-  subDonorEmail: "",
+  fundId: "",
+  donorName: "",
+  donorEmail: "",
   amount: "",
   notes: ""
 }
@@ -29,43 +31,47 @@ const handleChange = (e) => {
   
   const navigate = useNavigate();
   useEffect(() => {
+  const fetchCamapaign = async () => {
     try {
-      const fetchProfile = async() => {
-        const res = await axios.get(`http://localhost:3000/api/v1/user/get-profile/${id}`, {withCredentials: true});
-        // console.log(res.data?.profile);
-        setProfileDets(res.data?.profile);
-        
-      }
-      fetchProfile()
+      const res = await axios.get(
+        `${server}/api/v1/camp/get-campaign/${uuid}`,
+        { withCredentials: true }
+      );
+
+      setCampaign(res.data?.campaign);
     } catch (error) {
       console.log(error);
-      
     }
-  }, [])
+  };
+
+  fetchCamapaign();
+}, [uuid]);
  
   
   const handDonate = async () => {
     const payLoad = {
-    donorId: id,
-    subDonorName: formData.subDonorName,
-    subDonorEmail: formData.subDonorEmail,
+    fundId: campaign.fund_id,
+    donorName: formData.donorName,
+    donorEmail: formData.donorEmail,
     amount: formData.amount,
     notes: formData.notes
   }
-  const res = await axios.post("http://localhost:3000/api/v1/fund/make-donation", payLoad, {withCredentials: true})
+  const res = await axios.post(`${server}/api/v1/don/make-donation`, payLoad, {withCredentials: true});
+  console.log(res.data);
+  
 
-    if(res.data.success){
+   /*  if(res.data.success){
       navigate("/thank-for-donating")
-    }
+    } */
     
   }
   return (
     <div className='container mx-auto px-2 lg:px-4'>
       <div className="border-[0.5px] border-solid border-black px-[12px] lg:px-[35px] rounded-[20px] bg-card-border mb-8 mt-10 shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] grid grid-cols-1 lg:grid-cols-3">
         <div className='lg:pr-[55px] pt-9 lg:col-span-2'>
-          <p className='text-black text-[40px] font-poppins font-bold mb-[22px]'>{profileDets?.fund_name}</p>
-          <p className='font-poppins text-2xl text-black font-bold mb-[11px]'>Organizer: <span className='font-normal'>{profileDets?.donor_name}</span></p>
-          <p className='font-poppins text-2xl text-black font-bold mb-[22px]'>Campaign Date: <span className='font-normal'>{new Date(profileDets?.start_date).toDateString()} to {new Date(profileDets?.end_date).toDateString()}</span></p>
+          <p className='text-black text-[40px] font-poppins font-bold mb-[22px]'>{campaign?.fund_name}</p>
+          <p className='font-poppins text-2xl text-black font-bold mb-[11px]'>Organizer: <span className='font-normal'>{campaign?.teacher_name}</span></p>
+          <p className='font-poppins text-2xl text-black font-bold mb-[22px]'>Campaign Date: <span className='font-normal'>{new Date(campaign?.start_date).toDateString()} to {new Date(campaign?.end_date).toDateString()}</span></p>
           <div className='bg-soft-gray rounded-[20px] pt-[17px] pl-[22px] pr-6 pb-[19px] mb-6'>
             <div className='flex items-center justify-between mb-1.5'>
               <p className='text-purple-purple-500 font-poppins text-[15px] font-semibold'> $300 raised</p>
@@ -83,16 +89,16 @@ const handleChange = (e) => {
             <p className='text-black font-poppins text-[20px] font-bold mbl-[22px]'>Support the Fund</p>
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-[18px]'>
               <MyButton variant='outline' text="$10" style="text-gray-800 border-gray-800" onClick={() => setformData(p => ({...p, amount: 10}))} />
-              <MyButton variant='outline' text="$20" style="text-gray-800 border-gray-800" onClick={() => setformData(p => ({...p, amount: 10}))} />
-              <MyButton variant='outline' text="$30" style="text-gray-800 border-gray-800" onClick={() => setformData(p => ({...p, amount: 10}))} />
+              <MyButton variant='outline' text="$20" style="text-gray-800 border-gray-800" onClick={() => setformData(p => ({...p, amount: 20}))} />
+              <MyButton variant='outline' text="$30" style="text-gray-800 border-gray-800" onClick={() => setformData(p => ({...p, amount: 30}))} />
               <MyButton variant='outline' text="Enter Custom Amount" style="text-gray-800 border-gray-800 text-sm" />
             </div>
           </div>
         </div>
         <div className='lg:border-l lg:border-silver-gray pt-[45px] lg:pl-[44px] pb-[31px]'>
           <div className='flex flex-col items-start justify-center gap-4.5 mb-[33px]'>
-            <MyInput forId="Name(Optional)" type="text" placeholder="e.g. The Smith Family" name="subDonorName" value={formData.subDonorName} onChange={handleChange} label="Name (Optional)" labelStyle="font-semibold  gap-0" inputStyle="bg-white" />
-            <MyInput forId="Email" type="email" placeholder="Enter Your Email" name="subDonorEmail" value={formData.subDonorEmail} onChange={handleChange} label="Email" labelStyle="font-semibold  gap-0" star='yes' inputStyle="bg-white" />
+            <MyInput forId="Name(Optional)" type="text" placeholder="e.g. The Smith Family" name="donorName" value={formData.donorName} onChange={handleChange} label="Name (Optional)" labelStyle="font-semibold  gap-0" inputStyle="bg-white" />
+            <MyInput forId="Email" type="email" placeholder="Enter Your Email" name="donorEmail" value={formData.donorEmail} onChange={handleChange} label="Email" labelStyle="font-semibold  gap-0" star='yes' inputStyle="bg-white" />
             <div className='w-full'>
               <p className='font-poppins font-semibold text-base text-black mb-1'>Note</p>
               <MyTextArea style="p-4 bg-white border border-solid border-black !outline-0 focus:!ring-0 focus:ring-primary-color/40 focus:border-primary-color transition-all min-h-[100px] text-base text-gray-500" placeholder="Enter Your Message" name="notes" value={formData.notes} onChange={handleChange} />

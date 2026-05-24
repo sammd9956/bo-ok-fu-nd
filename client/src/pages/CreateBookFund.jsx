@@ -16,8 +16,8 @@ const CreateBookFund = () => {
     schoolName: "",
     fundName: "",
     role: "",
-    contactName: "",
-    email: "",
+    teacherName: "",
+    teacherEmail: "",
     password: "",
     message: ""
 }
@@ -55,10 +55,10 @@ const CreateBookFund = () => {
             fundName: formData.fundName,
             startDate: fromDate,
             endDate: toDate,
-            donorName: formData.contactName,
-            donorEmail: formData.email,
-            donorPassword: formData.password,
-            goalAmount: selectedGoal,
+            teacherName: formData.contactName,
+            teacherEmail: formData.email,
+            password: formData.password,
+            goal: selectedGoal,
             message: formData.message
         }
      
@@ -66,7 +66,7 @@ const CreateBookFund = () => {
             const res = await axios.post("http://localhost:3000/api/v1/fund/create-fund", creatFundPayload, {withCredentials: true});
             alert("launched");
             // console.log(res.data.fundBy?.id)
-            if(res){
+            if(res.data.success){
                 navigate(`/`)
             }
         } catch (error) {

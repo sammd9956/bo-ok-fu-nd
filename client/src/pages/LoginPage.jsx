@@ -5,23 +5,37 @@ import MyCheckbox from '@/components/common/MyCheckbox'
 import MyButton from '@/components/common/MyButton'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import toast from 'react-hot-toast'
+import { server } from '@/constatnts/config'
+import { useDispatch } from 'react-redux'
+import { userExist } from '@/redux/slices/authSlices'
 
 const LoginPage = () => {
     const [Email, setEmail] = useState("");
-    const [Password, setPassword] = useState("")
+    const [Password, setPassword] = useState("");
+    const dispatch = useDispatch();
     
      const navigate = useNavigate()
 
      const signinHandler = async() => {
+      const config = {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
        try {
-         const res = await axios.post('http://localhost:3000/api/v1/user/sign-in', {email: Email, password: Password}, {withCredentials: true})
-         alert("done")
-        //  console.log(res.data);
+         const {data} = await axios.post(`${server}/api/v1/fund/sign-in`, {teacherEmail: Email, password: Password}, config)
+         
+         console.log("data",data.user);
+         
+        dispatch(userExist(data.user))
+        toast.success(data.message)
          navigate("/dashboard");        
                
        } catch (error) {
-        alert(error.response.data.message)
-        console.log(error.response.data.message);
+        toast.error(error.response?.data?.message)
+        console.log(error.response);
         
        }
      }

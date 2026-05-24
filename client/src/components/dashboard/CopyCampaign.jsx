@@ -2,10 +2,10 @@ import React from 'react'
 import { Share2 } from 'lucide-react'
 import { toast } from 'sonner';
 
-const CopyCampaign = ({donorId}) => {
+const CopyCampaign = ({fundCode}) => {
   const handleCopyCampaignLink = async () => {
     // const currentLink = window.location.href;
-    const currentLink = `${window.location}/${donorId}`;
+    const currentLink = `${window.location.origin}/campaign/view-campaign/${fundCode}`;
     console.log("currr",currentLink);
     
     try {
@@ -35,4 +35,5 @@ const CopyCampaign = ({donorId}) => {
     )
 }
 
-export default CopyCampaign
+export default CopyCampaign;
+

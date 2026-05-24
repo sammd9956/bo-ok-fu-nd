@@ -30,6 +30,8 @@ import MyButton from "../common/MyButton";
 import useDailogBox from "@/store/useDailogBox";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { server } from "@/constatnts/config";
 
 const donationData = [
   {
@@ -90,13 +92,16 @@ const donationData = [
   },
 ];
 
-export default function DashboardDonationTable({data = [], setFlag}) {
+export default function DashboardDonationTable({setTotalRaised, setTotalDonors, setFlag}) {
+  const [donation, setDonation] = useState([])
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [thankSent, setThankSent] = useState({})
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [thanksData, setThanksData] = useState()
+  const [thanksData, setThanksData] = useState();
+  const fundId = useSelector((state) => state.auth);
+  
    const initialState = {
               donorName: "",
               donorMail: "",
@@ -116,7 +121,7 @@ export default function DashboardDonationTable({data = [], setFlag}) {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  const filteredData = data
+  const filteredData = donation
     .filter((item) =>
       item.donor_name.toLowerCase().includes(search.toLowerCase())
     )
@@ -131,6 +136,32 @@ export default function DashboardDonationTable({data = [], setFlag}) {
     useEffect(() => {
         setGlobalDailogBoxOpenValue(openDialog);
     }, [openDialog, setOpenDialog]);
+
+    useEffect(() => {
+
+  const fetchDonation = async () => {
+    try {
+      const res = await axios.get( `${server}/api/v1/don/get-donation`, { withCredentials: true } );
+
+      // console.log("ressssponse", res.data);
+      setDonation(res.data.donation);
+      if (setTotalRaised) {
+  setTotalRaised(res.data.totalRaised);
+}
+      if (setTotalRaised) {
+  setTotalDonors(res.data.
+totalDonors);
+}
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  fetchDonation();
+
+}, []);
+    
 
     const sendThankHandle = async (id) => {
       const res = await axios.get(`http://localhost:3000/api/v1/fund/get-fund-details/${id}`, {withCredentials: true});
@@ -155,7 +186,7 @@ export default function DashboardDonationTable({data = [], setFlag}) {
         toast(res.data.message);
         setOpenDialog(false)
         setFlag(openDialog)
-        console.log(res.data);
+        // console.log(res.data);
         
       } catch (error) {
         console.log(error);
@@ -215,7 +246,7 @@ export default function DashboardDonationTable({data = [], setFlag}) {
             <TableBody>
               {filteredData.map((item) => (
                 <TableRow
-                  key={item.book_fund_id}
+                  key={item.donation_id}
                   className="border-b-0 hover:bg-transparent"
                 >
                   <TableCell className="py-6">
@@ -230,13 +261,13 @@ export default function DashboardDonationTable({data = [], setFlag}) {
                     </div>
                   </TableCell>
                   <TableCell className="text-black text-[15px] font-poppins">
-                    {item.goal_amount}
+                    {item.amount}
                   </TableCell>
                   <TableCell className="text-black text-[15px] font-poppins italic">
-                    {item.message}
+                    {item.notes}
                   </TableCell>
                   <TableCell className="text-center">
-                    {item.ac_flag != '0' ? (
+                    {item.mail_flag == '0' ? (
                       <span className="text-spring-green font-semibold text-[15px] text-center">
                         Sent
                       </span>
@@ -253,7 +284,7 @@ export default function DashboardDonationTable({data = [], setFlag}) {
                           setSelectedItem(item);
                           setOpenDialog(true);
                         } */
-                      onClick={() => sendThankHandle(item.book_fund_id)}
+                      onClick={() => sendThankHandle(item.donation_id)}
                         className="rounded-md px-4 py-2.5 text-lg bg-primary-color hover:bg-primary-color-dark shadow-md hover:cursor-pointer text-[13px] font-inter text-white font-semibold"
                       >
                         Send Thanks

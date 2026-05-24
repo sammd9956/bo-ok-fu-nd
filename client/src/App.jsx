@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Layout from './section/layout/Layout'
 import Homepage from './pages/Homepage'
@@ -13,10 +13,35 @@ import EGiftCard from './pages/EGiftCard'
 import ViewCampaign from './pages/ViewCampaign'
 import ThankForDonating from './pages/ThankForDonating'
 import MainLayout from './section/layout/MainLayout'
+import axios from 'axios'
+import { server } from './constatnts/config'
+import { useDispatch } from 'react-redux'
+import { userExist, userNotExist } from './redux/slices/authSlices'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
+  const dispatch = useDispatch();
+console.log("server", server);
+
+  useEffect(() => {
+  console.log(" GET ME RUN");
+
+  axios.get(`${server}/api/v1/fund/get-me`, {
+    withCredentials: true
+  })
+  .then(({ data }) => {
+    console.log("GET ME SUCCESS:", data);
+
+    if (data?.user) {
+      dispatch(userExist(data.user));
+    }
+  })
+  .catch((err) => {
+    console.log("GET ME FAIL:", err.message);
+  });
+
+}, []);
   return (
     <BrowserRouter>
     <MainLayout>
@@ -33,7 +58,7 @@ function App() {
           <Route path="/create-new-campaign" element={<EditCampaign />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/e-gift-card" element={<EGiftCard />} />
-          <Route path="/view-campaign/:id?" element={<ViewCampaign />} />
+          <Route path="/campaign/view-campaign/:uuid?" element={<ViewCampaign />} />
           <Route path="/thank-for-donating" element={<ThankForDonating />} />
         </Route>
       </Routes>

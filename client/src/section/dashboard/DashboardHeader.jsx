@@ -4,13 +4,18 @@ import CopyCampaign from '@/components/dashboard/CopyCampaign'
 import useWhoFundValue from '@/store/useWhoFundValue'
 import { Eye, SquarePen } from 'lucide-react'
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-const DashboardHeader = ({myProfile}) => {
-
+const DashboardHeader = () => {
+    const {radioBtnValue,setRadioBtnValue} = useWhoFundValue()
     const navigate = useNavigate();
+    const {user} = useSelector((state)=>state.auth)
+    console.log("userr",user);
+    if (!user) return null;
+    
 
-     const {radioBtnValue,setRadioBtnValue} = useWhoFundValue()
+
 
     return (
         <div className='flex flex-col lg:flex-row items-center justify-between mb-6 lg:mb-12'>
@@ -23,7 +28,7 @@ const DashboardHeader = ({myProfile}) => {
                 
              </div>
                 <div className='flex flex-col lg:flex-row lg:items-center gap-[7px] lg:gap-[15px]'>
-                    <p className='text-gray-800 text-xl font-poppins font-bold'>My Class: <span className='font-normal'>{myProfile.fund_name}</span></p>
+                    <p className='text-gray-800 text-xl font-poppins font-bold'>My Class: <span className='font-normal'>{user.fund_name}</span></p>
 
                     <p
                         onClick={() => navigate("/edit-campaign")}
@@ -41,11 +46,11 @@ const DashboardHeader = ({myProfile}) => {
                 </div>
             </div>
             <div className='flex flex-col lg:flex-row lg:items-center gap-[12px] lg:gap-[30px] w-full lg:w-fit'>
-                <CopyCampaign donorId={myProfile.donor_id} />
-                <Navigate />
+                <CopyCampaign fundCode={user.fund_code} />
+                <Navigate fundCode={user.fund_code} />
             </div>
         </div>
     )
 }
 
-export default DashboardHeader
+export default DashboardHeader;

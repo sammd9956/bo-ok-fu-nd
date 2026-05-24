@@ -1,7 +1,7 @@
 import { pool } from "../../config/db.js";
 import { TryCatch } from "../../middleware/error.js";
 import { ErrorHandler } from "../../utils/utility.js";
-import {findCampaignById, updateCampaignById} from "../models/campaignModel.js";
+import {findCampaignByFundCode, findCampaignById, updateCampaignById} from "../models/campaignModel.js";
 
 const createNewCompaign = TryCatch(async (req, res, next) => {
     const {fundName, startDate, endDate, goalAmount, message} = req.body;
@@ -16,13 +16,16 @@ const createNewCompaign = TryCatch(async (req, res, next) => {
 })
 
 //find campaign by id
-const getCampaignById = TryCatch(async(req, res, next) => {
+const getCampaignByFundCode = TryCatch(async(req, res, next) => {
     
-    const id = req.params.id;
+    const {fundCode} = req.params;
     
-    const result = await findCampaignById(id);
+    const rows = await findCampaignByFundCode(fundCode);
+    if(rows.length === 0){
+        return next(new ErrorHandler("Campaign not found",404))
+    }
 
-    res.status(200).json({success: true, campaign: result})
+    res.status(200).json({success: true, campaign: rows[0]})
 })
 
 const updateCampaign = TryCatch(async(req, res, next) => {
@@ -32,4 +35,4 @@ const updateCampaign = TryCatch(async(req, res, next) => {
 })
 
 
-export { createNewCompaign, getCampaignById, updateCampaign }
+export { createNewCompaign, getCampaignByFundCode, updateCampaign }

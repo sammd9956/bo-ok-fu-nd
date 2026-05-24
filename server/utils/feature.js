@@ -10,7 +10,7 @@ const cookieOptions = {
   secure: true,
 };
 const sendToken = (res, user, code, message) => {
-  const token = jwt.sign({ id: user.donor_id, name: user.donor_name, email: user.donor_email }, process.env.JWT_SECRET);
+  const token = jwt.sign({ id: user.fund_id, name: user.teacher_name, email: user.teacher_email, fundCode: user.fund_code}, process.env.JWT_SECRET);
   return res.status(code).cookie(BOOK_FUND_TOKEN, token, cookieOptions).json({
     success: true,
     user,

@@ -10,17 +10,17 @@ const findCampaignById = async(id) => {
 };
 
 const updateCampaignById = async(fundName, goalAmount, message, startDate, endDate, id) => {
-    console.log(fundName);
-    console.log(goalAmount);
-    console.log(message);
-    console.log(startDate);
-    console.log(endDate);
-    console.log(id);
-    
         
      const [result] = await pool.query( "UPDATE tbl_campaign SET fund_name = ?, goal_amount  = ?, message = ?, start_date = ?, end_date = ? WHERE campaign_id = ?", [fundName, goalAmount, message, startDate, endDate, id] );
      return result;
     
 };
 
-export {findCampaignById, updateCampaignById};
+const findCampaignByFundCode = async(fundCode)=>{
+
+    const [result] = await pool.query( `SELECT fund_id, fund_name, fund_type, school_name, teacher_name, teacher_email, goal, message, start_date, end_date, fund_code FROM tbl_funds WHERE fund_code = ?`, [fundCode] )
+
+    return result;
+}
+
+export {findCampaignById, updateCampaignById, findCampaignByFundCode};

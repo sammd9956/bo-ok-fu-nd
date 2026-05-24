@@ -5,7 +5,7 @@ import {findUserByEmail, getProfileById} from '../models/userModel.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { pool } from '../../config/db.js';
-import { findDonorByEmail } from '../models/bookFunModel.js';
+// import { findDonorByEmail } from '../models/bookFunModel.js';
 
 
 // signup 
@@ -30,7 +30,7 @@ const userSignUp = TryCatch( async (req, res, next) => {
 
 }) 
 
-const userSignIn = TryCatch(async (req, res, next) => {
+/* const userSignIn = TryCatch(async (req, res, next) => {
     const { email, password } = req.body;
 
     
@@ -58,7 +58,7 @@ const userSignIn = TryCatch(async (req, res, next) => {
     sendToken(res, existingUser, 200, `Welcome Back ${existingUser.donor_name.toUpperCase()}`)
    
 });
-
+ */
 //get my profile
 const getMyProfile = TryCatch( async (req, res, next) => {
        const donorId= req.user.id;
@@ -100,4 +100,4 @@ const getProfile = TryCatch(async(req, res, next) => {
 
   res.json({ success: true, message: "Email sent" });
 }; */
-export { userSignUp, userSignIn, getMyProfile, getProfile };
+export { userSignUp, getMyProfile, getProfile };
