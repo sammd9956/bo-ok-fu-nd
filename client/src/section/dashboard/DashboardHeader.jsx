@@ -11,11 +11,8 @@ const DashboardHeader = () => {
     const {radioBtnValue,setRadioBtnValue} = useWhoFundValue()
     const navigate = useNavigate();
     const {user} = useSelector((state)=>state.auth)
-    console.log("userr",user);
     if (!user) return null;
     
-
-
 
     return (
         <div className='flex flex-col lg:flex-row items-center justify-between mb-6 lg:mb-12'>
@@ -28,7 +25,7 @@ const DashboardHeader = () => {
                 
              </div>
                 <div className='flex flex-col lg:flex-row lg:items-center gap-[7px] lg:gap-[15px]'>
-                    <p className='text-gray-800 text-xl font-poppins font-bold'>My Class: <span className='font-normal'>{user.fund_name}</span></p>
+                    <p className='text-gray-800 text-xl font-poppins font-bold'>My Class: <span className='font-normal'>{user?.fund_name.toUpperCase()}</span></p>
 
                     <p
                         onClick={() => navigate("/edit-campaign")}

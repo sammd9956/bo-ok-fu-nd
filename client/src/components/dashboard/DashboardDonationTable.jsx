@@ -143,7 +143,6 @@ export default function DashboardDonationTable({setTotalRaised, setTotalDonors, 
     try {
       const res = await axios.get( `${server}/api/v1/don/get-donation`, { withCredentials: true } );
 
-      // console.log("ressssponse", res.data);
       setDonation(res.data.donation);
       if (setTotalRaised) {
   setTotalRaised(res.data.totalRaised);
@@ -164,29 +163,34 @@ totalDonors);
     
 
     const sendThankHandle = async (id) => {
-      const res = await axios.get(`http://localhost:3000/api/v1/fund/get-fund-details/${id}`, {withCredentials: true});
       
-      setThanksData(res.data.data);
+      try {
+        const res = await axios.get(`${server}/api/v1/don/find-donation/${id}`, {withCredentials: true});
+      
+      setThanksData(res.data.rows);
       setSelectedItem(id);
       setOpenDialog(true);
+      } catch (error) {
+        console.log(error);
+        
+      }
     }
     
     const mailConfirm = async () => {
       try {
         const payload = {
+          donationId: thanksData.donation_id,
           donorName: thanksData.donor_name,
-          email: thanksData.donor_email,
-          amount: thanksData.goal_amount,
-          bookFundID: thanksData.book_fund_id,
+          donorEmail: thanksData.donor_email,
+          amount: thanksData.amount,
           message: formData.message,
         }
       
-      
-        const res = await axios.post("http://localhost:3000/api/v1/fund/send-email", payload, {withCredentials: true} );
+        const res = await axios.patch(`${server}/api/v1/don/send-mail`, payload, {withCredentials: true} );
+        
         toast(res.data.message);
-        setOpenDialog(false)
-        setFlag(openDialog)
-        // console.log(res.data);
+        setOpenDialog(false);
+        setFlag(openDialog);
         
       } catch (error) {
         console.log(error);
@@ -252,7 +256,7 @@ totalDonors);
                   <TableCell className="py-6">
                     <div>
                       <h3 className="text-black font-bold text-[15px] font-poppins">
-                        {item.donor_name}
+                        {item.donor_name.toUpperCase()}
                       </h3>
 
                       <p className="text-black text-[15px] font-poppins">
@@ -267,7 +271,7 @@ totalDonors);
                     {item.notes}
                   </TableCell>
                   <TableCell className="text-center">
-                    {item.mail_flag == '0' ? (
+                    {item.a_flag != '0' ? (
                       <span className="text-spring-green font-semibold text-[15px] text-center">
                         Sent
                       </span>

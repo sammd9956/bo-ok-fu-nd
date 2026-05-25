@@ -4,33 +4,34 @@ import MyInput from '@/components/common/MyInput'
 import MySelect from '@/components/common/MySelect'
 import MyTextArea from '@/components/common/MyTextArea'
 import Profile from '@/components/common/Profile'
+import { server } from '@/constatnts/config'
 import useWhoFundValue from '@/store/useWhoFundValue'
 import { formatMySQLDate } from '@/utils/feature'
 import axios from 'axios'
 import { ArrowBigLeft } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { useSelector } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 const EditCampaign = () => {
+    const [cuurentCampaign, setCuurentCampaign] = useState()
     const [campaignDetails, setCampaignDetails] = useState()
     const [date, setDate] = useState(undefined);
-    const [selectedGoal, setSelectedGoal] = useState("")
+    const [selectedGoal, setSelectedGoal] = useState(null)
+    const user = useSelector((state) => state.auth.user);
     const initialState = {
             fundName: "",
             startDate: "",
             endDate: "",
             goal: "",
-            message: ""
+            message: "",
+            id: ""
         }
     const [formData, setFormData] = useState(initialState);
        
     const navigate = useNavigate();
-    const params = useParams();
-    
-    const isEditMode = !!params.id;
-   
-    
+    const params = useParams();       
     
 
     const { radioBtnValue } = useWhoFundValue()
@@ -69,62 +70,44 @@ const EditCampaign = () => {
                     message: formData.message
                 }
         const res = await axios.post("http://localhost:3000/api/v1/camp/new-campaign", campaignPayload, {withCredentials: true});
-        // console.log(res.data);
-        // console.log("aaaaa", campaignPayload.message);
         toast.success(res.data.message);
          } catch (error) {
             console.log(error);
             
          }
     }
+    
+   useEffect(() => {
+    if (!user) return;
 
+    setFormData({
+        fundName: user?.fund_name || "",
+        startDate: user?.start_date || "",
+        endDate: user?.end_date || "",
+        goal: user?.goal || "",
+        message: user?.message || "",
+        id: user?.fund_id || ""
+    });
 
-useEffect(() => {
-    const fetchCampaignById = async () => {
-        try {
+    setSelectedGoal(Number(user?.goal || 0));
 
-            const res = await axios.get(
-                `http://localhost:3000/api/v1/camp/get-campaign-by-id/${params.id}`,
-                { withCredentials: true }
-            );
+    setDate({
+        from: user?.start_date
+            ? new Date(user.start_date)
+            : undefined,
 
-            const campaign = res.data.campaign;
+        to: user?.end_date
+            ? new Date(user.end_date)
+            : undefined
+    });
 
-            setCampaignDetails(campaign);
+}, [user]);
 
-            setFormData({
-                fundName: campaign.fund_name || "",
-                startDate: campaign.start_date || "",
-                endDate: campaign.end_date || "",
-                goal: campaign.goal_amount || "",
-                message: campaign.message || ""
-            });
-
-            setSelectedGoal(campaign.goal_amount || "");
-             setSelectedGoal(String(Number(campaign.goal_amount || "")));
-
-            
-            setDate({ from: campaign.start_date ? new Date(campaign.start_date) : undefined,
-
-                to: campaign.end_date ? new Date(campaign.end_date) : undefined
-            });
-
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    if (params.id) {
-        fetchCampaignById();
-    }
-
-}, [params.id]);
-   
 
 const handleUpdate = async() => {
     try {
         const fromDate = date?.from ? formatMySQLDate(date.from) : "";
-    const toDate = date?.to ? formatMySQLDate(date.to) : "";
+        const toDate = date?.to ? formatMySQLDate(date.to) : "";
     
     const payload = {               
             fundName: formData.fundName,
@@ -132,14 +115,17 @@ const handleUpdate = async() => {
             endDate: toDate,
             goalAmount: selectedGoal,
             message: formData.message,
-            id:params.id
+            id: formData.id
             }
-    const res = await axios.post("http://localhost:3000/api/v1/camp/update-campaign", payload, {withCredentials: true});
-    console.log(res.data);
-    toast.success(res.data.message)
+    // const res = await axios.post("http://localhost:3000/api/v1/camp/update-campaign", payload, {withCredentials: true});
+    const res = await axios.put(`${server}/api/v1/fund/edit-campaign`, payload, {withCredentials: true});
+    toast.success(res.data.message);
+    navigate("/dashboard")
+     window.location.reload();
     
     } catch (error) {
         console.log(error);
+        throw(error)
         
     }
 }
@@ -161,11 +147,11 @@ const handleUpdate = async() => {
                 </p>
                 <div className='border-[0.5px] border-solid border-black px-[24px] lg:px-[71px] pt-[19px] pb-10 rounded-[20px] lg:max-w-[600px] mx-auto bg-card-border relative z-50 w-full'>
                     {
-                        // isCreatePage == '/create-new-campaign' ?
-                        isEditMode  ?
-                        <p className='text-center font-poppins font-bold text-[32px] text-gray-800 mb-[21px]'>Edit Your Campaign</p>
-                        :
+                        isCreatePage == '/create-new-campaign' ?
+                        
                         <p className='text-center font-poppins font-bold text-[32px] text-gray-800 mb-[21px]' >Create a New Campaign</p>
+                        :
+                        <p className='text-center font-poppins font-bold text-[32px] text-gray-800 mb-[21px]'>Edit Your Campaign</p>
                     }
                     <div className='mb-[36px]'>
                         <MyInput forId={nameForId} type="text" name="fundName" placeholder={namePlaceholder} value={formData.fundName} onChange={handleChange} label={nameLabel} labelStyle="font-semibold lg:min-w-[450px] gap-0" />
@@ -185,11 +171,10 @@ const handleUpdate = async() => {
                     </div>
 
                     {
-                        // isCreatePage == '/create-new-campaign' ?
-                        isEditMode ?
-                        <MyButton variant="primary" text="Save" style="!px-6 !py-4 w-full" onClick={handleUpdate} />
-                        :
+                        isCreatePage == '/create-new-campaign' ?
                         <MyButton variant="primary" text="Create New Campaign" style="!px-6 !py-4 w-full" onClick={handleCampaignCreate} />
+                        :
+                        <MyButton variant="primary" text="Save" style="!px-6 !py-4 w-full" onClick={handleUpdate} />
                     }
                 </div>
             </div>

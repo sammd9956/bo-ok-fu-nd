@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS tbl_donations (
   donor_email VARCHAR(255) NOT NULL,
   amount DECIMAL(12,2) NOT NULL,
   notes TEXT,
+  a_flag ENUM("0", "1") DEFAULT "0",
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (fund_id) REFERENCES tbl_funds (fund_id)
   

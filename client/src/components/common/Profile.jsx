@@ -1,11 +1,12 @@
 import { UserPen, UserRoundCog } from 'lucide-react'
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const Profile = () => {
     const navigate = useNavigate()
-    const [showEditProfile, setShowEditProfile] = useState(false)
-
+    const [showEditProfile, setShowEditProfile] = useState(false);
+    const user = useSelector((state) => state.auth.user);
     const location = useLocation()
   
 
@@ -16,7 +17,7 @@ const Profile = () => {
             <div className='flex items-center gap-2.5'>
                 <div className='flex flex-col items-end'>
                     <p className='text-[15px] text-black font-poppins font-bold'>
-                        Janet Jackson
+                        {user?.teacher_name.toUpperCase()}
                     </p>
 
                     <p className='text-[12px] text-black font-poppins'>

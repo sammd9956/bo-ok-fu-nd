@@ -36,6 +36,14 @@ const creatDonation = async ( fundId, donorName, donorEmail, amount, notes) => {
     return result;
 };
 
+//update fund
+const updateCampaign = async(id, fundName, startDate, endDate, goalAmount, message) => {
+    const [result] = await pool.query( "UPDATE tbl_funds set fund_name = ?, start_date = ?, end_date = ?, goal = ?, message = ? WHERE fund_id = ?", [fundName, startDate, endDate, goalAmount, message, id] )
+
+    return result.affectedRows > 0;
+
+}
 
 
-export {findByIdAndUpdate, findFundByEmail, findMeByEmail, creatDonation};
+
+export {findByIdAndUpdate, findFundByEmail, findMeByEmail, creatDonation, updateCampaign};

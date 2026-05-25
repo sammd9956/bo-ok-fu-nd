@@ -4,7 +4,7 @@ import { v4 as uuidv4}  from 'uuid';
 import { TryCatch } from "../../middleware/error.js";
 import { sendEmail } from "../../utils/sendEmail.js";
 import { ErrorHandler } from "../../utils/utility.js";
-import { creatDonation, findFundByEmail, findMeByEmail } from "../models/bookFunModel.js";
+import { creatDonation, findFundByEmail, findMeByEmail, updateCampaign } from "../models/bookFunModel.js";
 import { sendToken } from "../../utils/feature.js";
 
 
@@ -133,4 +133,18 @@ const sendThankYouEmail = TryCatch(async (req, res, next) => {
 
 });
 
-export { createFunds, fundSignIn, getMe, getAllFunds, getFundDetailsById, sendThankYouEmail, createDonationBySubDonor }
+//edit campaign
+const editCampaign = TryCatch(async(req, res, next) => {
+    const {id, fundName, startDate, endDate, goalAmount, message} = req.body;
+    if(!id || !fundName) return next (new ErrorHandler("Access denied", 400));
+    
+    console.log(req.body);
+    if(req.user.id == req.body.id){
+        updateCampaign(id, fundName, startDate, endDate, goalAmount, message)
+        
+    }
+    
+    res.status(200).json({success: true, message: "ok"})
+})
+
+export { createFunds, fundSignIn, getMe, getAllFunds, getFundDetailsById, sendThankYouEmail, createDonationBySubDonor, editCampaign }

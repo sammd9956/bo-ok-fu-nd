@@ -1,6 +1,7 @@
 import { TryCatch } from "../../middleware/error.js";
+import { sendEmail, sendMail } from "../../utils/sendEmail.js";
 import { ErrorHandler } from "../../utils/utility.js";
-import { getDonationByFundId, makeDonation } from "../models/donationModel.js";
+import { getDonationByFundId, getDonationById, makeDonation } from "../models/donationModel.js";
 
 const createDonation = TryCatch(async (req, res, next) => {
 
@@ -27,7 +28,6 @@ const createDonation = TryCatch(async (req, res, next) => {
 
 //get all donation
 const getDonation = TryCatch(async (req, res, next) => {
-    console.log("reqqqq",req.user);
     
     const fundId = req.user.id;
 
@@ -47,4 +47,39 @@ const getDonation = TryCatch(async (req, res, next) => {
     });
 });
 
-export { createDonation, getDonation };
+//find donation by id
+const findDonationById = TryCatch(async(req, res, next) => {
+    const id = req.params.id;
+    
+    const [rows] = await getDonationById(id);
+
+    res.status(200).json({success: true, message: "ok", id, rows})
+})
+
+//send thnx mail
+const sendThankYouMail = TryCatch(async(req, res, next) => {
+    
+    const {donationId, donorName, donorEmail, amount, message} = req.body;
+    
+    if (!donationId || !donorEmail || !donorName) {
+        return next(new ErrorHandler("All fields are required!", 400));
+    }
+    
+    const id = donationId;
+    const to = donorEmail;
+    const subject = `Thank You ${donorName} ❤️`;
+    const html = `
+        <h2>Hi ${donorName}</h2>
+        <p>Thank you for donating ₹${amount || "0"}</p>
+        <p>${message || "Thank you for supporting our campaign."}</p>
+    `;
+    
+    await sendMail({id, to, subject, html});
+    
+    res.status(200).json({success: true, message: "Thank you mail sent"})
+})
+
+//update mail flag
+
+
+export { createDonation, getDonation, findDonationById, sendThankYouMail };

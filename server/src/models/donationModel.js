@@ -13,10 +13,32 @@ const makeDonation = async ( fundId, donorName, donorEmail, amount, notes ) => {
 //get all donation against fundID
 
 const getDonationByFundId = async (fundId) => {
-    const [result] = await pool.query("SELECT donation_id, fund_id, donor_name, donor_email, amount, notes FROM tbl_donations WHERE fund_id = ? ", [fundId])
+    const [result] = await pool.query("SELECT donation_id, fund_id, donor_name, donor_email, amount, notes, a_flag FROM tbl_donations WHERE fund_id = ? ", [fundId])
     return result;
 }
 
+const getDonationById = async(id) => {
+     const [result] = await pool.query("SELECT donation_id, donor_name, donor_email, amount, notes, a_flag FROM tbl_donations WHERE donation_id = ? ", [id])
+    return result;
+}
+
+//update mail flag
+const updateDonationOnMail = async (id) => {
+    try {
+        if (!id) return false;
+
+        const [result] = await pool.query(
+            "UPDATE tbl_donations SET a_flag = ? WHERE donation_id = ?",
+            ["1", id]
+        );
+
+        return result.affectedRows > 0;
+    } catch (error) {
+        console.error("Error updating donation mail flag:", error);
+        return false;
+    }
+};
 
 
-export { makeDonation, getDonationByFundId };
+
+export { makeDonation, getDonationByFundId, getDonationById, updateDonationOnMail };

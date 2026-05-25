@@ -22,7 +22,6 @@ function App() {
   const [count, setCount] = useState(0);
 
   const dispatch = useDispatch();
-console.log("server", server);
 
   useEffect(() => {
   console.log(" GET ME RUN");
@@ -31,7 +30,7 @@ console.log("server", server);
     withCredentials: true
   })
   .then(({ data }) => {
-    console.log("GET ME SUCCESS:", data);
+    // console.log("GET ME SUCCESS:", data);
 
     if (data?.user) {
       dispatch(userExist(data.user));
@@ -41,7 +40,7 @@ console.log("server", server);
     console.log("GET ME FAIL:", err.message);
   });
 
-}, []);
+}, [dispatch]);
   return (
     <BrowserRouter>
     <MainLayout>
@@ -54,7 +53,7 @@ console.log("server", server);
           <Route path="/dashboard/:don_id?" element={<Dashboard />} />
           {/* <Route path="/edit-campaign" element={<EditCampaign />} />
            */}
-           <Route path="/edit-campaign/:id?" element={<EditCampaign />} />
+           <Route path="/edit-campaign" element={<EditCampaign />} />
           <Route path="/create-new-campaign" element={<EditCampaign />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/e-gift-card" element={<EGiftCard />} />

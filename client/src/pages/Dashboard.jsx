@@ -8,7 +8,6 @@ const Dashboard = () => {
   const [totalRaised, setTotalRaised] = useState(0);
   const [totalDonors, setTotalDonors] = useState(0)
   const [campaignID, setCampaignID] = useState();
-  console.log("total", totalRaised);
   
   return (
       <div className='w-full'>

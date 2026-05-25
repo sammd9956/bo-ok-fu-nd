@@ -7,6 +7,7 @@ import creditCard from "@/assets/credit_card.png"
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { server } from '@/constatnts/config'
+import toast from 'react-hot-toast'
 
 const ViewCampaign = () => {
 // const [profileDets, setProfileDets] = useState(null);
@@ -49,7 +50,8 @@ const handleChange = (e) => {
  
   
   const handDonate = async () => {
-    const payLoad = {
+  try {
+      const payLoad = {
     fundId: campaign.fund_id,
     donorName: formData.donorName,
     donorEmail: formData.donorEmail,
@@ -57,12 +59,22 @@ const handleChange = (e) => {
     notes: formData.notes
   }
   const res = await axios.post(`${server}/api/v1/don/make-donation`, payLoad, {withCredentials: true});
-  console.log(res.data);
-  
+  toast.success(res.data?.message)
 
-   /*  if(res.data.success){
-      navigate("/thank-for-donating")
-    } */
+      // navigate("/thank-for-donating");
+      navigate("/thank-for-donating", {
+  state: {
+    donatedAmount: formData.amount,
+    donorName: formData.donorName,
+    campaignName: campaign?.fund_name,
+    uuid: uuid
+  },
+});
+
+  } catch (error) {
+    console.log(error);
+    
+  }
     
   }
   return (
