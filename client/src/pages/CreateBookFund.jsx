@@ -9,6 +9,7 @@ import useWhoFundValue from '@/store/useWhoFundValue'
 import { formatMySQLDate } from '@/utils/feature'
 import axios from 'axios'
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 
 const CreateBookFund = () => {
@@ -71,6 +72,8 @@ const CreateBookFund = () => {
             }
         } catch (error) {
             console.log(error.response.data);
+            toast.error(error.response.data.message);
+
             
         }
        

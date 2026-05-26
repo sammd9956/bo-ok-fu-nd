@@ -4,7 +4,7 @@ import { v4 as uuidv4}  from 'uuid';
 import { TryCatch } from "../../middleware/error.js";
 import { sendEmail } from "../../utils/sendEmail.js";
 import { ErrorHandler } from "../../utils/utility.js";
-import { creatDonation, findFundByEmail, findMeByEmail, updateCampaign } from "../models/bookFunModel.js";
+import { creatDonation, findFundByEmail, findMeByEmail, updateCampaign, updateMyProfile } from "../models/bookFunModel.js";
 import { sendToken } from "../../utils/feature.js";
 
 
@@ -24,6 +24,20 @@ const createFunds = TryCatch(async (req, res, next) => {
     
     // console.log("create fund");
     res.status(200).json({success:true, message: "Fund created successfully", fundBy: {id: result.insertId, fundName, teacherEmail, fundCode}})
+})
+
+//update profile
+const updateProfile = TryCatch(async (req, res, next) => {   
+    console.log("reqzzzz", req.body);
+    
+    const id = req.user.id;
+    const {teacherName, teacherEmail, password} = req.body;
+    if(!teacherName || !teacherEmail || !password) return next (new ErrorHandler("All fields are required", 400));
+    console.log("equser", req.user);
+    if(!req.user) return next(new ErrorHandler("Unathorized", 404));
+    await updateMyProfile(teacherName, teacherEmail, password, id)
+        
+    res.status(200).json({success:true, message: "Profile updated successfully", })
 })
 
 //sign-in
@@ -147,4 +161,14 @@ const editCampaign = TryCatch(async(req, res, next) => {
     res.status(200).json({success: true, message: "ok"})
 })
 
-export { createFunds, fundSignIn, getMe, getAllFunds, getFundDetailsById, sendThankYouEmail, createDonationBySubDonor, editCampaign }
+export { 
+    createFunds,
+     fundSignIn,
+     getMe,
+     getAllFunds,
+     getFundDetailsById,
+     sendThankYouEmail,
+     createDonationBySubDonor,
+     editCampaign,
+     updateProfile 
+    }

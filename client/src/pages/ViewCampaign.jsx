@@ -10,6 +10,7 @@ import { server } from '@/constatnts/config'
 import toast from 'react-hot-toast'
 
 const ViewCampaign = () => {
+  const [selectedValue,setSelectedValue] = useState("");
 // const [profileDets, setProfileDets] = useState(null);
 const [campaign, setCampaign] = useState(null)
 const params = useParams();
@@ -49,7 +50,7 @@ const handleChange = (e) => {
 }, [uuid]);
  
   
-  const handDonate = async () => {
+  const handleDonate = async () => {
   try {
       const payLoad = {
     fundId: campaign.fund_id,
@@ -81,8 +82,8 @@ const handleChange = (e) => {
     <div className='container mx-auto px-2 lg:px-4'>
       <div className="border-[0.5px] border-solid border-black px-[12px] lg:px-[35px] rounded-[20px] bg-card-border mb-8 mt-10 shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] grid grid-cols-1 lg:grid-cols-3">
         <div className='lg:pr-[55px] pt-9 lg:col-span-2'>
-          <p className='text-black text-[40px] font-poppins font-bold mb-[22px]'>{campaign?.fund_name}</p>
-          <p className='font-poppins text-2xl text-black font-bold mb-[11px]'>Organizer: <span className='font-normal'>{campaign?.teacher_name}</span></p>
+          <p className='text-black text-[40px] font-poppins font-bold mb-[22px]'>{campaign?.fund_name.toUpperCase()}</p>
+          <p className='font-poppins text-2xl text-black font-bold mb-[11px]'>Organizer: <span className='font-normal'>{campaign?.teacher_name.toUpperCase()}</span></p>
           <p className='font-poppins text-2xl text-black font-bold mb-[22px]'>Campaign Date: <span className='font-normal'>{new Date(campaign?.start_date).toDateString()} to {new Date(campaign?.end_date).toDateString()}</span></p>
           <div className='bg-soft-gray rounded-[20px] pt-[17px] pl-[22px] pr-6 pb-[19px] mb-6'>
             <div className='flex items-center justify-between mb-1.5'>
@@ -97,13 +98,28 @@ const handleChange = (e) => {
           </div>
           <p className='text-gray-800 font-poppins text-[20px] font-semibold mb-2'>Message</p>
           <p className='text-gray-800 font-poppins text-base mb-11'>Bookworm Central Book Fair is coming!  I want to ensure every student can experience the joy of choosing their very own new book.</p>
-          <div className=''>
+          {/* <div className=''>
             <p className='text-black font-poppins text-[20px] font-bold mbl-[22px]'>Support the Fund</p>
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-[18px]'>
               <MyButton variant='outline' text="$10" style="text-gray-800 border-gray-800" onClick={() => setformData(p => ({...p, amount: 10}))} />
               <MyButton variant='outline' text="$20" style="text-gray-800 border-gray-800" onClick={() => setformData(p => ({...p, amount: 20}))} />
               <MyButton variant='outline' text="$30" style="text-gray-800 border-gray-800" onClick={() => setformData(p => ({...p, amount: 30}))} />
               <MyButton variant='outline' text="Enter Custom Amount" style="text-gray-800 border-gray-800 text-sm" />
+            </div>
+          </div> */}
+          <div className=''>
+            <p className='text-black font-poppins text-[20px] font-bold mb-[22px]'>Support the Fund</p>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-[18px]'>
+              <MyButton variant='outline' text="$10" style={`text-gray-800 border-gray-800 ${selectedValue == "$10" ? 'bg-outline-border text-white hover:bg-outline-border/80' : null}`} onClick={()=>{setSelectedValue("$10"), setformData(p => ({...p, amount: 10}))}}/>
+              <MyButton variant='outline' text="$20" style={`text-gray-800 border-gray-800 ${selectedValue == "$20" ? 'bg-outline-border text-white hover:bg-outline-border/80' : null}`} onClick={()=>{setSelectedValue("$20"), setformData(p => ({...p, amount: 20}))}}/>
+              <MyButton variant='outline' text="$30" style={`text-gray-800 border-gray-800 ${selectedValue == "$30" ? 'bg-outline-border text-white hover:bg-outline-border/80' : null}`} onClick={()=>{setSelectedValue("$30"), setformData(p => ({...p, amount: 30}))}}/>
+              
+              {
+                selectedValue == "custom amount" ? (<MyInput autoFocus inputStyle="bg-white text-gray-800 text-base text-inter font-semibold border-gray-800 py-4 px-6 h-full" placeholder="Enter Your Amount..."  />) : (<MyButton variant='outline' text="Enter Custom Amount" style={`text-gray-800 border-gray-800 text-sm ${selectedValue == "custom amount" ? 'bg-outline-border text-white hover:bg-outline-border/80' : null}`} onClick={()=>{
+                setSelectedValue("custom amount")
+                // setConvertToInput(true)
+              }}/>)
+              }
             </div>
           </div>
         </div>
@@ -131,7 +147,7 @@ const handleChange = (e) => {
           </div>
           <div className='flex flex-col items-center gap-4'>
             {/* <MyButton variant='primary' text="Donate" style='w-full' onClick={()=>navigate("/thank-for-donating")}/> */}
-            <MyButton variant='primary' text="Donate" style='w-full' onClick={handDonate}/>
+            <MyButton variant='primary' text="Donate" style='w-full' onClick={handleDonate}/>
             <MyButton variant='outline' text="Cancel" style='w-full' />
           </div>
         </div>

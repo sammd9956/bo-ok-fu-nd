@@ -20,6 +20,10 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import useDailogBox from '@/store/useDailogBox'
+import axios from 'axios'
+import { server } from '@/constatnts/config'
+import { format } from 'date-fns'
+import { useSelector } from 'react-redux'
 
 const donationData = [
     {
@@ -82,20 +86,23 @@ const donationData = [
 
 
 const CardSection = ({totalRaised, totalDonors}) => {
+    const [sortedData, setSortedData] = useState()
     const [checked, setChecked] = useState(false)
     const [openDialog, setOpenDialog] = useState(false);
     const [sortOrder, setSortOrder] = useState("asc");
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const user = useSelector((state) => state.auth.user);
+console.log(user);
 
     const handleSort = () => {
         setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     };
 
-    const sortedData = [...donationData].sort((a, b) =>
+    /* const sortedData = [...donationData].sort((a, b) =>
         sortOrder === "asc"
             ? a.amount - b.amount
             : b.amount - a.amount
-    );
+    ); */
 
     const { setGlobalDailogBoxOpenValue } = useDailogBox()
 
@@ -103,15 +110,32 @@ const CardSection = ({totalRaised, totalDonors}) => {
         setGlobalDailogBoxOpenValue(openDialog);
     }, [openDialog, setOpenDialog]);
 
+    useEffect(() => {
 
+      const fetchData = async() => {
+  try {
+            const res = await axios.get( `${server}/api/v1/don/get-donation`, { withCredentials: true } );
+            setSortedData(res.data.donation)
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+      }
+      fetchData()
+     
+    }, [])
+       
+    const percentage = user?.goal > 0 ? Math.min((totalRaised / user.goal) * 100, 100) : 0;
+      
     return (
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-[26px]'>
             <div className='bg-outline-border rounded-[20px] pt-9 pl-[38px] pr-[42px] pb-[54px] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]'>
                 <p className='text-xl font-poppins font-medium mb-[13px] text-white'>$ Total Raised</p>
                 <p className='text-[50px] font-poppins font-bold mb-[22px] text-white'>${totalRaised}</p>
-                <p className='text-[15px] font-poppins font-light mb-[11px] text-white'>70% of $500 goal</p>
+                <p className='text-[15px] font-poppins font-light mb-[11px] text-white'>{percentage}% of ${user?.goal} GOAL</p>
                 <Progress
-                    value={70}
+                    value={percentage}
                     className="bg-soft-lavender h-2 rounded-full overflow-hidden [&>div]:bg-white"
                 />
             </div>
@@ -185,9 +209,9 @@ const CardSection = ({totalRaised, totalDonors}) => {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {sortedData.map((item) => (
+                                        {sortedData && sortedData.map((item) => (
                                             <TableRow
-                                                key={item.id}
+                                                key={item.donation_id}
                                                 className="border-b-0 hover:bg-transparent"
                                             >
                                                 <TableCell className="py-6">
@@ -197,18 +221,18 @@ const CardSection = ({totalRaised, totalDonors}) => {
                                                         </h3> */}
 
                                                         <p className="text-black text-[15px] font-poppins">
-                                                            {item.date}
+                                                            {format(new Date(item.created_at), "dd-MMM-yyyy")}
                                                         </p>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="text-black text-[15px] font-poppins font-bold">
-                                                    {item.message}
+                                                    {item.notes}
                                                 </TableCell>
                                                 <TableCell className="text-black text-[15px] font-poppins font-bold">
-                                                    {item.status}
+                                                    {item?.transaction_type.charAt(0).toUpperCase() + item?.transaction_type.slice(1)}
                                                 </TableCell>
                                                 <TableCell className="text-bright-green text-[15px] font-poppins font-bold">
-                                                    +${item.amount.toFixed(2)}
+                                                    +${item?.amount}
                                                 </TableCell>
 
                                             </TableRow>
@@ -219,7 +243,7 @@ const CardSection = ({totalRaised, totalDonors}) => {
                         </div>
                         <div className='flex items-center justify-between px-8 pb-4 border-t border-solid border-black'>
                             <p className='font-poppins text-[15px] font-bold text-black'>Balance</p>
-                            <p className='font-poppins text-[15px] font-bold text-bright-green'>$45.00</p>
+                            <p className='font-poppins text-[15px] font-bold text-bright-green'>${totalRaised.toFixed(2)}</p>
                         </div>
 
                     </div>

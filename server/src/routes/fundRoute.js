@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import { createDonationBySubDonor, createFunds, editCampaign, fundSignIn, getAllFunds, getFundDetailsById, getMe, sendThankYouEmail} from '../controllers/fundController.js';
+import { createDonationBySubDonor, createFunds, editCampaign, fundSignIn, getAllFunds, getFundDetailsById, getMe, sendThankYouEmail, updateProfile} from '../controllers/fundController.js';
 import { isAuthenticated } from '../../middleware/auth.js';
 
 router.post("/create-fund", createFunds);
@@ -11,5 +11,6 @@ router.post("/send-email", sendThankYouEmail);
 router.get("/get-all-funds", getAllFunds);
 router.get("/get-fund-details/:f_id", getFundDetailsById);
 router.put("/edit-campaign", isAuthenticated, editCampaign);
+router.patch("/update-profile", isAuthenticated, updateProfile);
 
 export default router;

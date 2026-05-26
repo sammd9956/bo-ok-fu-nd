@@ -6,9 +6,10 @@ CREATE TABLE IF NOT EXISTS tbl_donations (
   amount DECIMAL(12,2) NOT NULL,
   notes TEXT,
   a_flag ENUM("0", "1") DEFAULT "0",
+  transaction_type ENUM('donation', 'purchase') DEFAULT 'donation',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (fund_id) REFERENCES tbl_funds (fund_id)
   ON DELETE CASCADE
-  ON UPDATE CASCADE,
+  ON UPDATE CASCADE
   
 );

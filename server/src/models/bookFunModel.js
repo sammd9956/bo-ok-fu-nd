@@ -1,4 +1,5 @@
 import { pool } from '../../config/db.js';
+import bcrypt from 'bcrypt';
 
 const findByIdAndUpdate = async(id) => {
     
@@ -9,6 +10,8 @@ const findByIdAndUpdate = async(id) => {
 
 const findFundByEmail = async (teacherEmail) => {
 
+console.log("SELECT fund_id, fund_type, school_name, fund_name, start_date, end_date, teacher_name, teacher_email, password, goal, message, fund_code FROM tbl_funds WHERE teacher_email", teacherEmail);
+
     const [result] = await pool.query(
         "SELECT fund_id, fund_type, school_name, fund_name, start_date, end_date, teacher_name, teacher_email, password, goal, message, fund_code FROM tbl_funds WHERE teacher_email = ?",
         [teacherEmail]
@@ -17,7 +20,7 @@ const findFundByEmail = async (teacherEmail) => {
     return result;
 };
 const findMeByEmail = async (teacherEmail) => {
-
+console.log("emm", teacherEmail);
     const [result] = await pool.query(
         "SELECT fund_id, fund_type, school_name, fund_name, start_date, end_date, teacher_name, teacher_email, goal, message, fund_code FROM tbl_funds WHERE teacher_email = ?",
         [teacherEmail]
@@ -43,7 +46,22 @@ const updateCampaign = async(id, fundName, startDate, endDate, goalAmount, messa
     return result.affectedRows > 0;
 
 }
+//update profile
+const updateMyProfile = async(teacherName, teacherEmail, password, id) => {
+    const hashedPass = await bcrypt.hash(password, 10);
+    const [result] = await pool.query( "UPDATE tbl_funds set teacher_name = ?, teacher_email = ?, password = ? WHERE fund_id = ?", [teacherName, teacherEmail, hashedPass, id] )
+
+    return result.affectedRows > 0;
+
+}
 
 
 
-export {findByIdAndUpdate, findFundByEmail, findMeByEmail, creatDonation, updateCampaign};
+export {
+    findByIdAndUpdate,
+     findFundByEmail,
+     findMeByEmail,
+     creatDonation,
+     updateCampaign,
+     updateMyProfile
+    };

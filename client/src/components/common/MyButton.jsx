@@ -10,14 +10,16 @@ const variantStyles = {
     "text-purple-500 border border-outline-border hover:bg-outline-border hover:text-white hover:shadow-md",
 }
 
-const MyButton = ({ variant = "primary", text = "Check" , style="" ,onClick}) => {
+const MyButton = ({ variant = "primary", text = "Check" , style="" ,onClick }) => {
 
   return (
     <Button
-      onClick={onClick}
+      onClick={onClick} 
       className={`text-base px-6 py-4 rounded-md font-semibold font-inter hover:cursor-pointer min-w-[140px] transition-all duration-200 ease-in-out h-auto ${variantStyles[variant] || variantStyles.primary} ${style}`}
     >
       {text}
+
+
     </Button>
   )
 }
