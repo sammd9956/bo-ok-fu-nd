@@ -24,7 +24,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-  console.log(" GET ME RUN");
+  // console.log(" GET ME RUN");
 
   axios.get(`${server}/api/v1/fund/get-me`, {
     withCredentials: true
@@ -57,7 +57,7 @@ function App() {
           <Route path="/create-new-campaign" element={<EditCampaign />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/e-gift-card" element={<EGiftCard />} />
-          <Route path="/campaign/view-campaign/:uuid?" element={<ViewCampaign />} />
+          <Route path="/campaign/view-campaign" element={<ViewCampaign />} />
           <Route path="/thank-for-donating" element={<ThankForDonating />} />
         </Route>
       </Routes>

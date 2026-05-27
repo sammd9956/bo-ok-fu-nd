@@ -5,13 +5,14 @@ import { getDonationByFundId, getDonationById, makeDonation } from "../models/do
 
 const createDonation = TryCatch(async (req, res, next) => {
 
-    const { fundId, donorName, donorEmail, amount, notes } = req.body;
+    const { campaignId, fundId, donorName, donorEmail, amount, notes } = req.body;
 
     if (!donorName || !donorEmail || !amount) {
         return next(ErrorHandler("All fields are required", 401));
     }
 
     const result = await makeDonation(
+        campaignId,
         fundId,
         donorName,
         donorEmail,

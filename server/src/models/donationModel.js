@@ -1,10 +1,10 @@
 import { pool } from '../../config/db.js';
 
-const makeDonation = async ( fundId, donorName, donorEmail, amount, notes ) => {
+const makeDonation = async ( campaignId, fundId, donorName, donorEmail, amount, notes ) => {
 
     const [result] = await pool.query(
-        "INSERT INTO tbl_donations (fund_id, donor_name, donor_email, amount, notes) VALUES (?, ?, ?, ?, ?)",
-        [fundId, donorName, donorEmail, amount, notes]
+        "INSERT INTO tbl_donations (campaign_id, fund_id, donor_name, donor_email, amount, notes) VALUES (?,?, ?, ?, ?, ?)",
+        [campaignId,fundId, donorName, donorEmail, amount, notes]
     );
 
     return result;

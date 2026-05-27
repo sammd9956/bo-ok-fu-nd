@@ -1,11 +1,9 @@
 import { Eye } from 'lucide-react'
 import React from 'react'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Navigate = ({fundCode}) => {
     const navigate = useNavigate();
-    const params = useParams();
-    console.log("params", params.don_id);
     
     return (
         <p

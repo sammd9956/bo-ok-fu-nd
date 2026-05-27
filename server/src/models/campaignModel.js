@@ -1,20 +1,6 @@
 import { pool } from '../../config/db.js';
 
-const findCampaignById = async(id) => {
-    
-    
-     return await pool.query( "SELECT campaign_id, fund_name, goal_amount, message, start_date, end_date from tbl_campaign WHERE campaign_id = ?", [id] )
-    .then(([rows]) => {
-        return rows.length > 0 ? rows[0] : null;
-    });
-};
 
-const updateCampaignById = async(fundName, goalAmount, message, startDate, endDate, id) => {
-        
-     const [result] = await pool.query( "UPDATE tbl_campaign SET fund_name = ?, goal_amount  = ?, message = ?, start_date = ?, end_date = ? WHERE campaign_id = ?", [fundName, goalAmount, message, startDate, endDate, id] );
-     return result;
-    
-};
 
 const findCampaignByFundCode = async(fundCode)=>{
 
@@ -23,4 +9,11 @@ const findCampaignByFundCode = async(fundCode)=>{
     return result;
 }
 
-export {findCampaignById, updateCampaignById, findCampaignByFundCode};
+const findCampaignByFundId = async(fundId)=>{
+
+    const [result] = await pool.query( `SELECT id, fund_id, title, start_date, end_date, goal_amount, description FROM tbl_campaigns WHERE fund_id = ?`, [fundId] )
+
+    return result;
+}
+
+export { findCampaignByFundCode, findCampaignByFundId };

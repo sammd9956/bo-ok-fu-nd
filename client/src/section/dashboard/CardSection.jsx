@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import * as SwitchPrimitives from "@radix-ui/react-switch"
-import { Progress } from "@/components/ui/progress"
-import MySwitch from '../../components/common/MySwitch'
-import { useNavigate } from 'react-router-dom'
-import MyButton from '../../components/common/MyButton'
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog";
-import { ArrowUpDown, X } from 'lucide-react'
+} from "@/components/ui/dialog"
+import { Progress } from "@/components/ui/progress"
 import {
     Table,
     TableBody,
@@ -18,81 +12,27 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table"
+import { server } from '@/constatnts/config'
 import useDailogBox from '@/store/useDailogBox'
 import axios from 'axios'
-import { server } from '@/constatnts/config'
 import { format } from 'date-fns'
+import { ArrowUpDown } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-
-const donationData = [
-    {
-        id: 1,
-        donor: "Smith Family",
-        date: "Oct 12",
-        amount: 20,
-        message: "Happy Reading!",
-        status: "Donation",
-    },
-    {
-        id: 2,
-        donor: "Anonymous",
-        date: "Oct 12",
-        amount: 50,
-        message: "For the kids!",
-        status: "Purchase",
-    },
-    {
-        id: 3,
-        donor: "John Doe",
-        date: "Oct 14",
-        amount: 10,
-        message: "Keep it up!",
-        status: "Donation",
-    },
-    {
-        id: 4,
-        donor: "Emma Watson",
-        date: "Oct 15",
-        amount: 100,
-        message: "Love this initiative!",
-        status: "Purchase",
-    },
-    {
-        id: 5,
-        donor: "Emma Watson",
-        date: "Oct 15",
-        amount: 100,
-        message: "Love this initiative!",
-        status: "Donation",
-    },
-    {
-        id: 6,
-        donor: "Emma Watson",
-        date: "Oct 15",
-        amount: 100,
-        message: "Love this initiative!",
-        status: "Purchase",
-    },
-    {
-        id: 7,
-        donor: "Emma Watson",
-        date: "Oct 15",
-        amount: 100,
-        message: "Love this initiative!",
-        status: "Donation",
-    },
-];
+import { useNavigate } from 'react-router-dom'
+import MyButton from '../../components/common/MyButton'
+import MySwitch from '../../components/common/MySwitch'
 
 
-const CardSection = ({totalRaised, totalDonors}) => {
+const CardSection = ({totalRaised, totalDonors, campaigns=[], selectedCampaign}) => {
+    
     const [sortedData, setSortedData] = useState()
     const [checked, setChecked] = useState(false)
     const [openDialog, setOpenDialog] = useState(false);
     const [sortOrder, setSortOrder] = useState("asc");
     const navigate = useNavigate();
     const user = useSelector((state) => state.auth.user);
-console.log(user);
 
     const handleSort = () => {
         setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -124,16 +64,30 @@ console.log(user);
       }
       fetchData()
      
-    }, [])
-       
-    const percentage = user?.goal > 0 ? Math.min((totalRaised / user.goal) * 100, 100) : 0;
+    }, []);
+    const isWholeSchool = user?.fund_type === "Whole School";
+
+const currentGoal = isWholeSchool
+    ? selectedCampaign?.goal_amount
+    : user?.goal;
+
+const currentTitle = isWholeSchool
+    ? selectedCampaign?.title
+    : user?.fund_name;
+
+const currentDescription = isWholeSchool
+    ? selectedCampaign?.description
+    : user?.message;
+    
+    // const percentage = user?.goal > 0 ? (totalRaised / user.goal) * 100 : 0;
+    const percentage = currentGoal > 0 ? (totalRaised / currentGoal) * 100 : 0;
       
     return (
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-[26px]'>
             <div className='bg-outline-border rounded-[20px] pt-9 pl-[38px] pr-[42px] pb-[54px] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]'>
                 <p className='text-xl font-poppins font-medium mb-[13px] text-white'>$ Total Raised</p>
                 <p className='text-[50px] font-poppins font-bold mb-[22px] text-white'>${totalRaised}</p>
-                <p className='text-[15px] font-poppins font-light mb-[11px] text-white'>{percentage}% of ${user?.goal} GOAL</p>
+                <p className='text-[15px] font-poppins font-light mb-[11px] text-white'>{percentage.toFixed(0)}% of ${currentGoal || 0} GOAL</p>
                 <Progress
                     value={percentage}
                     className="bg-soft-lavender h-2 rounded-full overflow-hidden [&>div]:bg-white"

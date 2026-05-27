@@ -1,11 +1,8 @@
 import DashboardDonationTable from '@/components/dashboard/DashboardDonationTable'
 import MyButton from '@/components/common/MyButton';
 
-const DonationTable =  ({setTotalRaised, totalRaised, setTotalDonors}) => {
-console.log("totalrrr", totalRaised);
+const DonationTable =  ({setTotalRaised, setTotalDonors}) => {
 
-  
-  
   return (
     <>
     

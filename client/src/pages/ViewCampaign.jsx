@@ -1,20 +1,24 @@
+import creditCard from "@/assets/credit_card.png"
 import MyButton from '@/components/common/MyButton'
 import MyInput from '@/components/common/MyInput'
 import MyTextArea from '@/components/common/MyTextArea'
 import { Progress } from '@/components/ui/progress'
-import React, { useEffect, useState } from 'react'
-import creditCard from "@/assets/credit_card.png"
-import { useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
 import { server } from '@/constatnts/config'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const ViewCampaign = () => {
   const [selectedValue,setSelectedValue] = useState("");
 // const [profileDets, setProfileDets] = useState(null);
-const [campaign, setCampaign] = useState(null)
-const params = useParams();
-  const {uuid} = params;
+const [campaign, setCampaign] = useState(null);
+const location = useLocation();
+const locationParams = new URLSearchParams(location.search);
+const campaignId = locationParams.get("campaign");
+const fund = locationParams.get("fund");
+
+
 const intialState = {
   fundId: "",
   donorName: "",
@@ -36,7 +40,7 @@ const handleChange = (e) => {
   const fetchCamapaign = async () => {
     try {
       const res = await axios.get(
-        `${server}/api/v1/camp/get-campaign/${uuid}`,
+        `${server}/api/v1/camp/get-campaign/${fund}`,
         { withCredentials: true }
       );
 
@@ -47,18 +51,20 @@ const handleChange = (e) => {
   };
 
   fetchCamapaign();
-}, [uuid]);
+}, [fund]);
  
   
   const handleDonate = async () => {
   try {
-      const payLoad = {
+    const payLoad = {
+    campaignId: campaignId,
     fundId: campaign.fund_id,
     donorName: formData.donorName,
     donorEmail: formData.donorEmail,
     amount: formData.amount,
     notes: formData.notes
   }
+  
   const res = await axios.post(`${server}/api/v1/don/make-donation`, payLoad, {withCredentials: true});
   toast.success(res.data?.message)
 
@@ -68,7 +74,7 @@ const handleChange = (e) => {
     donatedAmount: formData.amount,
     donorName: formData.donorName,
     campaignName: campaign?.fund_name,
-    uuid: uuid
+    uuid: fund
   },
 });
 
@@ -115,7 +121,7 @@ const handleChange = (e) => {
               <MyButton variant='outline' text="$30" style={`text-gray-800 border-gray-800 ${selectedValue == "$30" ? 'bg-outline-border text-white hover:bg-outline-border/80' : null}`} onClick={()=>{setSelectedValue("$30"), setformData(p => ({...p, amount: 30}))}}/>
               
               {
-                selectedValue == "custom amount" ? (<MyInput autoFocus inputStyle="bg-white text-gray-800 text-base text-inter font-semibold border-gray-800 py-4 px-6 h-full" placeholder="Enter Your Amount..."  />) : (<MyButton variant='outline' text="Enter Custom Amount" style={`text-gray-800 border-gray-800 text-sm ${selectedValue == "custom amount" ? 'bg-outline-border text-white hover:bg-outline-border/80' : null}`} onClick={()=>{
+                selectedValue == "custom amount" ? (<MyInput autoFocus inputStyle="bg-white text-gray-800 text-base text-inter font-semibold border-gray-800 py-4 px-6 h-full" placeholder="Enter Your Amount..."  value={formData.amount || ""} onChange={(e) => setformData((p) => ({ ...p, amount: Number(e.target.value), })) } />) : (<MyButton variant='outline' text="Enter Custom Amount" style={`text-gray-800 border-gray-800 text-sm ${selectedValue == "custom amount" ? 'bg-outline-border text-white hover:bg-outline-border/80' : null}`} onClick={()=>{
                 setSelectedValue("custom amount")
                 // setConvertToInput(true)
               }}/>)

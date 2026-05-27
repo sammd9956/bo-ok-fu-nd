@@ -36,6 +36,7 @@ const MyInput = ({
         placeholder={placeholder}
         autoFocus={autoFocus}
         name={name}
+        value={value}
         onChange={onChange}
         className={`border border-solid border-gray-300 rounded-md outline-none ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-gray-500 font-inter font-normal text-base px-4 py-3 h-auto bg-white ${inputStyle}`}
       />

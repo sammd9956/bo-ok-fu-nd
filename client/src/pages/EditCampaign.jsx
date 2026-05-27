@@ -36,15 +36,17 @@ const EditCampaign = () => {
 
     const { radioBtnValue } = useWhoFundValue()
 
-    const nameLabel = radioBtnValue == "My Class" ? 'Name of Fund' : 'Name of Campaign';
-    const namePlaceholder = radioBtnValue == "My Class" ? "Class Book Fund" : "Organizer Book Fund";
-    const nameForId = radioBtnValue == "My Class" ? 'NameOfFund' : 'NameOfCampaign';
+    const nameLabel = user?.fund_type == "My Class" ? 'Name of Fund' : 'Name of Campaign';
+    const namePlaceholder = user?.fund_type == "My Class" ? "Class Book Fund" : "Organizer Book Fund";
+    const nameForId = user?.fund_type == "My Class" ? 'NameOfFund' : 'NameOfCampaign';
 
-    const calenderLabel = radioBtnValue == "My Class" ? 'Enter start and end date' : 'Date of Campaign ';
+    const calenderLabel = user?.fund_type == "My Class" ? 'Enter start and end date' : 'Date of Campaign ';
 
     const location = useLocation();
 
     const isCreatePage = location.pathname;
+    
+    
     
 
     const goalPrice = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000];
@@ -63,21 +65,33 @@ const EditCampaign = () => {
                 const toDate = date?.to ? formatMySQLDate(date.to) : "";
                 const campaignPayload = {
                    
-                    fundName: formData.fundName,
+                    campName: formData.fundName,
                     startDate: fromDate,
                     endDate: toDate,
                     goalAmount: selectedGoal,
                     message: formData.message
                 }
+                console.log("campaignPayload", campaignPayload);
+                
         const res = await axios.post("http://localhost:3000/api/v1/camp/new-campaign", campaignPayload, {withCredentials: true});
+        console.log(res.data);
+        
         toast.success(res.data.message);
          } catch (error) {
-            console.log(error);
+            console.log(error.response);
             
          }
     }
+    const isCreatePages = location.pathname == "/create-new-campaign";
     
    useEffect(() => {
+      if(isCreatePage == "/create-new-campaign"){
+        setFormData(initialState);
+        setSelectedGoal(null);
+        return;
+        
+      }
+    
     if (!user) return;
 
     setFormData({
@@ -101,7 +115,7 @@ const EditCampaign = () => {
             : undefined
     });
 
-}, [user]);
+}, [user, isCreatePage]);
 
 
 const handleUpdate = async() => {
@@ -119,9 +133,11 @@ const handleUpdate = async() => {
             }
     // const res = await axios.post("http://localhost:3000/api/v1/camp/update-campaign", payload, {withCredentials: true});
     const res = await axios.put(`${server}/api/v1/fund/edit-campaign`, payload, {withCredentials: true});
+    console.log(res.data);
+    
     toast.success(res.data.message);
-    navigate("/dashboard")
-     window.location.reload();
+    /* navigate("/dashboard")
+     window.location.reload(); */
     
     } catch (error) {
         console.log(error);
@@ -129,6 +145,10 @@ const handleUpdate = async() => {
         
     }
 }
+
+
+
+
     return (
         <div className='mb-8 w-full'>
             <Profile />
