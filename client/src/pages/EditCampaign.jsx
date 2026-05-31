@@ -66,6 +66,7 @@ const EditCampaign = () => {
                 const campaignPayload = {
                    
                     campName: formData.fundName,
+                    campType: user.role,
                     startDate: fromDate,
                     endDate: toDate,
                     goalAmount: selectedGoal,

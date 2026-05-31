@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 const useWhoFundValue = create((set)=>({
-    radioBtnValue:"My Class",
+    radioBtnValue:"class",
     setRadioBtnValue:(value)=>set(()=>({radioBtnValue:value}))
 }))
 

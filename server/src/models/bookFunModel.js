@@ -1,5 +1,40 @@
 import { pool } from '../../config/db.js';
 import bcrypt from 'bcrypt';
+import {v4 as uuidv4} from 'uuid'
+
+
+
+const startFundService = async (reqBody) => {
+  const connection = await pool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const { role, schoolName, fundName, startDate, endDate, teacherName, teacherEmail, password, goal, message } = reqBody;
+
+    const hashedPass = await bcrypt.hash(password, 10);
+    const fundCode = uuidv4();
+    // 1. Insert user
+    const [userResult] = await connection.query( "INSERT INTO tbl_users (school_name, full_name, email, password, role) VALUES (?,?,?,?,?)", [schoolName, teacherName, teacherEmail, hashedPass, role] );
+
+    const userId = userResult.insertId;
+    
+
+    // 2. Insert campaign
+    const [campaignResult] = await connection.query( `INSERT INTO tbl_campaigns (user_id, campaign_name, campaign_type, goal_amount, message, start_date, end_date,fund_code) VALUES (?,?,?,?,?,?,?,?)`, [userId, fundName, role, goal, message, startDate, endDate, fundCode] );
+
+    await connection.commit();
+
+    return { success: true, userId, campaignId: campaignResult.insertId };
+
+  } catch (error) {
+    await connection.rollback();
+    console.log(error);
+    throw error;
+  }
+};
+
+
 
 const findByIdAndUpdate = async(id) => {
     
@@ -63,5 +98,6 @@ export {
      findMeByEmail,
      creatDonation,
      updateCampaign,
-     updateMyProfile
+     updateMyProfile,
+     startFundService
     };

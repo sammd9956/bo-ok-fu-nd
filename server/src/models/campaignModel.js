@@ -9,11 +9,24 @@ const findCampaignByFundCode = async(fundCode)=>{
     return result;
 }
 
-const findCampaignByFundId = async(fundId)=>{
+const getMyCampaignsService = async (userId) => {
 
-    const [result] = await pool.query( `SELECT id, fund_id, title, start_date, end_date, goal_amount, description FROM tbl_campaigns WHERE fund_id = ?`, [fundId] )
+    const [campaigns] = await pool.query( ` SELECT campaign_id, fund_code, campaign_name, campaign_type, goal_amount, start_date, end_date, created_at FROM tbl_campaigns WHERE user_id = ? `, [userId] );
 
-    return result;
-}
+    return campaigns;
+};
+const getCampaignsByFundCodeService = async (fundcode) => {
+console.log("fundCode", fundcode);
 
-export { findCampaignByFundCode, findCampaignByFundId };
+   try {
+     const [campaigns] = await pool.query( `SELECT c.campaign_id, c.fund_code, c.campaign_name, c.goal_amount, c.message, c.start_date, c.end_date, u.full_name, u.email, u.role FROM tbl_campaigns c INNER JOIN tbl_users u ON c.user_id = u.user_id WHERE c.fund_code = ?`,[fundcode] );
+
+    return campaigns[0];
+   } catch (error) {
+    console.log(error);
+    
+   }
+};
+
+
+export { findCampaignByFundCode, getMyCampaignsService, getCampaignsByFundCodeService };

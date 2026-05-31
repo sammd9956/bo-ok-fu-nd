@@ -55,21 +55,24 @@ const CardSection = ({totalRaised, totalDonors, campaigns=[], selectedCampaign})
       const fetchData = async() => {
   try {
             const res = await axios.get( `${server}/api/v1/don/get-donation`, { withCredentials: true } );
+          
+            
             setSortedData(res.data.donation)
             
         } catch (error) {
-            console.log(error);
+            console.log(error.reponse);
             
         }
       }
       fetchData()
      
     }, []);
-    const isWholeSchool = user?.fund_type === "Whole School";
+    const isWholeSchool = user?.fund_type === "school";
 
-const currentGoal = isWholeSchool
+/* const currentGoal = isWholeSchool
     ? selectedCampaign?.goal_amount
-    : user?.goal;
+    : user?.goal; */
+    const currentGoal = selectedCampaign?.goal_amount;
 
 const currentTitle = isWholeSchool
     ? selectedCampaign?.title
@@ -82,12 +85,13 @@ const currentDescription = isWholeSchool
     // const percentage = user?.goal > 0 ? (totalRaised / user.goal) * 100 : 0;
     const percentage = currentGoal > 0 ? (totalRaised / currentGoal) * 100 : 0;
       
+      
     return (
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-[26px]'>
             <div className='bg-outline-border rounded-[20px] pt-9 pl-[38px] pr-[42px] pb-[54px] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]'>
                 <p className='text-xl font-poppins font-medium mb-[13px] text-white'>$ Total Raised</p>
                 <p className='text-[50px] font-poppins font-bold mb-[22px] text-white'>${totalRaised}</p>
-                <p className='text-[15px] font-poppins font-light mb-[11px] text-white'>{percentage.toFixed(0)}% of ${currentGoal || 0} GOAL</p>
+                <p className='text-[15px] font-poppins font-light mb-[11px] text-white'>{percentage.toFixed(2)}% of ${currentGoal || 0} GOAL</p>
                 <Progress
                     value={percentage}
                     className="bg-soft-lavender h-2 rounded-full overflow-hidden [&>div]:bg-white"
@@ -175,15 +179,17 @@ const currentDescription = isWholeSchool
                                                         </h3> */}
 
                                                         <p className="text-black text-[15px] font-poppins">
-                                                            {format(new Date(item.created_at), "dd-MMM-yyyy")}
+                                                            {format(new Date(item?.donated_at), "dd-MMM-yyyy")}
                                                         </p>
                                                     </div>
+                                                  
                                                 </TableCell>
                                                 <TableCell className="text-black text-[15px] font-poppins font-bold">
-                                                    {item.notes}
+                                                    {item?.message}
                                                 </TableCell>
                                                 <TableCell className="text-black text-[15px] font-poppins font-bold">
-                                                    {item?.transaction_type.charAt(0).toUpperCase() + item?.transaction_type.slice(1)}
+                                                    {/* {item?.transaction_type.charAt(0).toUpperCase() + item?.transaction_type.slice(1)} */}
+                                                    asasasasas
                                                 </TableCell>
                                                 <TableCell className="text-bright-green text-[15px] font-poppins font-bold">
                                                     +${item?.amount}

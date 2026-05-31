@@ -4,26 +4,14 @@ import { v4 as uuidv4}  from 'uuid';
 import { TryCatch } from "../../middleware/error.js";
 import { sendEmail } from "../../utils/sendEmail.js";
 import { ErrorHandler } from "../../utils/utility.js";
-import { creatDonation, findFundByEmail, findMeByEmail, updateCampaign, updateMyProfile } from "../models/bookFunModel.js";
+import { creatDonation, findFundByEmail, findMeByEmail, startFundService, updateCampaign, updateMyProfile } from "../models/bookFunModel.js";
 import { sendToken } from "../../utils/feature.js";
 
 
 const createFunds = TryCatch(async (req, res, next) => {
-    const {fundType, schoolName, fundName, startDate, endDate, teacherName, teacherEmail, password, goal, message} = req.body;
+      const result = await startFundService(req.body);
+        res.status(201).json({ message: 'Fund created successfully', data: result });
     
-    if(!fundType || !schoolName || !fundName || !startDate || !endDate || !teacherName || !teacherEmail || !password || !goal){
-        return next ( new ErrorHandler ("All fields are required", 400) )
-    }
-    
-    // const existingDonor = await findFundByEmail(teacherEmail);
-  
-    // if(existingDonor) return next(new ErrorHandler("Donor already exist", 401))
-    const hashedPass = await bcrypt.hash(password, 10);
-    const fundCode = uuidv4();
-    const [result] = await pool.query("INSERT INTO tbl_funds (fund_type, school_name, fund_name, start_date, end_date, teacher_name, teacher_email, password, goal, message, fund_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [fundType, schoolName, fundName, startDate, endDate, teacherName, teacherEmail, hashedPass, goal, message, fundCode])
-    
-    // console.log("create fund");
-    res.status(200).json({success:true, message: "Fund created successfully", fundBy: {id: result.insertId, fundName, teacherEmail, fundCode}})
 })
 
 //update profile

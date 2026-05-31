@@ -3,6 +3,7 @@ import { Share2 } from 'lucide-react'
 import { toast } from 'sonner';
 
 const CopyCampaign = ({fundCode, campaignId}) => {
+    console.log("fundcode",fundCode);
     
   const handleCopyCampaignLink = async () => {
     // const currentLink = window.location.href;

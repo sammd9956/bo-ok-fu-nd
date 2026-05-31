@@ -25,12 +25,12 @@ const LoginPage = () => {
         }
       }
        try {
-         const {data} = await axios.post(`${server}/api/v1/fund/sign-in`, {teacherEmail: Email, password: Password}, config)
+         const {data} = await axios.post(`${server}/api/v1/user/sign-in`, {email: Email, password: Password}, config)
          
          console.log("data",data.user);
          
         dispatch(userExist(data.user))
-        toast.success(data.message)
+        // toast.success(data.message)
          navigate("/dashboard");        
                
        } catch (error) {

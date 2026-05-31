@@ -1,7 +1,7 @@
 import DashboardDonationTable from '@/components/dashboard/DashboardDonationTable'
 import MyButton from '@/components/common/MyButton';
 
-const DonationTable =  ({setTotalRaised, setTotalDonors}) => {
+const DonationTable =  ({setTotalRaised, setTotalDonors, selectedCampaign}) => {
 
   return (
     <>
@@ -9,7 +9,7 @@ const DonationTable =  ({setTotalRaised, setTotalDonors}) => {
          <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
       <div className='lg:col-span-2'>
     {/* <DashboardDonationTable /> */}
-    <DashboardDonationTable setTotalRaised={setTotalRaised} setTotalDonors={setTotalDonors} />
+    <DashboardDonationTable setTotalRaised={setTotalRaised} setTotalDonors={setTotalDonors} selectedCampaign={selectedCampaign} />
       </div>
       <div className='bg-outline-border rounded-[20px] pt-[31px] pl-[26px] pr-[18px] pb-[54px] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] h-fit mb-6 lg:mb-0'>
         <p className='text-xl font-poppins font-semibold mb-[10px] text-white'>Share Your Campaign</p>
