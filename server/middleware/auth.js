@@ -8,6 +8,8 @@ const token = req.cookies[BOOK_FUND_TOKEN];
 if(!token)
      return next(new ErrorHandler("Please, login to access this route", 401));
 const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+console.log("decodedData", decodedData);
+
 req.user = decodedData;
 next()
 

@@ -1,7 +1,7 @@
 import { TryCatch } from "../../middleware/error.js";
 import { sendEmail, sendMail } from "../../utils/sendEmail.js";
 import { ErrorHandler } from "../../utils/utility.js";
-import { getDonationByFundId, getDonationById, makeDonation } from "../models/donationModel.js";
+import { getDonationBycampaignId, getDonationById, makeDonation, makeDonationService } from "../models/donationModel.js";
 
 const createDonation = TryCatch(async (req, res, next) => {
 
@@ -27,12 +27,24 @@ const createDonation = TryCatch(async (req, res, next) => {
     });
 });
 
+const makeDonations = TryCatch(async(req, res, next) => {
+    const { campaignId, donorName, donorEmail, amount, notes } = req.body;
+    console.log("reqbody",req.body);
+    
+    const donation = await makeDonationService({ campaignId, donorName, donorEmail, amount, notes });
+    res.status(201).json({ success: true, message: "Donation successful", donation });
+})
+
 //get all donation
 const getDonation = TryCatch(async (req, res, next) => {
+    console.log("reeeeee", req.params);
     
-    const fundId = req.user.id;
+    // const fundId = req.user.id;
+    const {campaignid} = req.params;
+    console.log("campinid", campaignid);
+    
 
-    const result = await getDonationByFundId(fundId);
+    const result = await getDonationBycampaignId(campaignid);
     const totalRaised = result.reduce((acc, item) => {
     return acc + Number(item.amount);
     }, 0);
@@ -51,6 +63,7 @@ const getDonation = TryCatch(async (req, res, next) => {
 //find donation by id
 const findDonationById = TryCatch(async(req, res, next) => {
     const id = req.params.id;
+    console.log("ids",id);
     
     const [rows] = await getDonationById(id);
 
@@ -83,4 +96,4 @@ const sendThankYouMail = TryCatch(async(req, res, next) => {
 //update mail flag
 
 
-export { createDonation, getDonation, findDonationById, sendThankYouMail };
+export { createDonation, getDonation, findDonationById, sendThankYouMail, makeDonations };

@@ -10,13 +10,33 @@ import toast from 'react-hot-toast'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const ViewCampaign = () => {
+  const [campData, setCampData] = useState(null)
   const [selectedValue,setSelectedValue] = useState("");
 // const [profileDets, setProfileDets] = useState(null);
-const [campaign, setCampaign] = useState(null);
 const location = useLocation();
 const locationParams = new URLSearchParams(location.search);
 const campaignId = locationParams.get("campaign");
 const fund = locationParams.get("fund");
+console.log("loc",fund);
+
+
+useEffect(() => {
+  const fetchCamapaign = async () => {
+    try {
+      const res = await axios.get( `${server}/api/v1/camp/get-campaign/${fund}`, { withCredentials: true } );
+
+      setCampData(res.data?.campaign);
+      console.log(res.data?.campaign);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  if (fund) {
+    fetchCamapaign();
+  }
+}, [fund]);
+
 
 
 const intialState = {
@@ -36,29 +56,12 @@ const handleChange = (e) => {
 
   
   const navigate = useNavigate();
-  useEffect(() => {
-  const fetchCamapaign = async () => {
-    try {
-      const res = await axios.get(
-        `${server}/api/v1/camp/get-campaign/${fund}`,
-        { withCredentials: true }
-      );
-
-      setCampaign(res.data?.campaign);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  fetchCamapaign();
-}, [fund]);
- 
   
   const handleDonate = async () => {
   try {
     const payLoad = {
     campaignId: campaignId,
-    fundId: campaign.fund_id,
+    fundId: campData.fund_id,
     donorName: formData.donorName,
     donorEmail: formData.donorEmail,
     amount: formData.amount,
@@ -73,13 +76,13 @@ const handleChange = (e) => {
   state: {
     donatedAmount: formData.amount,
     donorName: formData.donorName,
-    campaignName: campaign?.fund_name,
+    campaignName: campData?.fund_name,
     uuid: fund
   },
 });
 
   } catch (error) {
-    console.log(error);
+    console.log(error.response);
     
   }
     
@@ -88,9 +91,9 @@ const handleChange = (e) => {
     <div className='container mx-auto px-2 lg:px-4'>
       <div className="border-[0.5px] border-solid border-black px-[12px] lg:px-[35px] rounded-[20px] bg-card-border mb-8 mt-10 shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] grid grid-cols-1 lg:grid-cols-3">
         <div className='lg:pr-[55px] pt-9 lg:col-span-2'>
-          <p className='text-black text-[40px] font-poppins font-bold mb-[22px]'>{campaign?.fund_name.toUpperCase()}</p>
-          <p className='font-poppins text-2xl text-black font-bold mb-[11px]'>Organizer: <span className='font-normal'>{campaign?.teacher_name.toUpperCase()}</span></p>
-          <p className='font-poppins text-2xl text-black font-bold mb-[22px]'>Campaign Date: <span className='font-normal'>{new Date(campaign?.start_date).toDateString()} to {new Date(campaign?.end_date).toDateString()}</span></p>
+          <p className='text-black text-[40px] font-poppins font-bold mb-[22px]'>{campData?.campaign_name.toUpperCase()}</p>
+          <p className='font-poppins text-2xl text-black font-bold mb-[11px]'>Organizer: <span className='font-normal'>{campData?.full_name.toUpperCase()}</span></p>
+          <p className='font-poppins text-2xl text-black font-bold mb-[22px]'>Campaign Date: <span className='font-normal'>{new Date(campData?.start_date).toDateString()} to {new Date(campData?.end_date).toDateString()}</span></p>
           <div className='bg-soft-gray rounded-[20px] pt-[17px] pl-[22px] pr-6 pb-[19px] mb-6'>
             <div className='flex items-center justify-between mb-1.5'>
               <p className='text-purple-purple-500 font-poppins text-[15px] font-semibold'> $300 raised</p>

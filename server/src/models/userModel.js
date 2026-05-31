@@ -1,19 +1,21 @@
 import { pool } from '../../config/db.js';
 
 const findUserByEmail = (email) => {
-    
-    return pool.query( "SELECT donor_id, fund_type, school_name, fund_name, start_date, end_date, donor_name, donor_email, goal_amount, message FROM tbl_book_funds WHERE donor_email = ?", [email] )
-    .then(([rows]) => {
-        return rows.length > 0 ? rows[0] : null;
-    });
-};
-const getProfileById = (id) => {
-    console.log("xxxxxx", id);
-    
-    return pool.query( "SELECT donor_id, fund_type, school_name, fund_name, start_date, end_date, donor_name, donor_email, goal_amount, message FROM tbl_book_funds WHERE donor_id = ?", [id] )
-    .then(([rows]) => {
-        return rows.length > 0 ? rows[0] : null;
-    });
+  return pool.query(
+    `SELECT user_id, school_name, full_name, email, password, role
+     FROM tbl_users
+     WHERE email = ?`,
+    [email]
+  )
+  .then(([rows]) => {
+    return rows.length > 0 ? rows[0] : null;
+  });
 };
 
-export {findUserByEmail, getProfileById};
+const getMyProfile = (email) => {
+  return pool.query( `SELECT user_id, school_name, full_name, email, role FROM tbl_users WHERE email = ?`, [email] )
+  .then(([rows]) => {
+    return rows.length > 0 ? rows[0] : null;
+  });
+};
+export {findUserByEmail, getMyProfile};

@@ -26,7 +26,17 @@ const CreateBookFund = () => {
     const [date, setDate] = useState(undefined);
     const [selectedGoal, setSelectedGoal] = useState("")
 
-    const radioGroupData = ["My Class", "Whole School"]
+    // const radioGroupData = ["My Class", "Whole School"]
+    const radioGroupData = [
+  {
+    label: "My Class",
+    value: "class"
+  },
+  {
+    label: "Whole School",
+    value: "school"
+  }
+]
 
     const goalPrice = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000]
 
@@ -51,7 +61,7 @@ const CreateBookFund = () => {
         const fromDate = date?.from ? formatMySQLDate(date.from) : "";
         const toDate = date?.to ? formatMySQLDate(date.to) : "";
         const creatFundPayload = {
-            fundType: radioBtnValue,
+            role: radioBtnValue,
             schoolName: formData.schoolName,
             fundName: formData.fundName,
             startDate: fromDate,
@@ -62,12 +72,14 @@ const CreateBookFund = () => {
             goal: selectedGoal,
             message: formData.message
         }
+        console.log("payload", creatFundPayload);
+        
      
         try {
             const res = await axios.post("http://localhost:3000/api/v1/fund/create-fund", creatFundPayload, {withCredentials: true});
             alert("launched");
-            // console.log(res.data.fundBy?.id)
-            if(res.data.success){
+            console.log(res.data)
+            if(res.data.data.success){
                 navigate(`/`)
             }
         } catch (error) {
@@ -98,10 +110,10 @@ const CreateBookFund = () => {
                 
                 {/* <MyCalendarRange1/> */}
                 <div className='mb-[26px]'>
-                    <MyInput forId="TeacherName" type="text" name="contactName" placeholder={radioBtnValue == "My Class"?'Teacher Name':'Organizers Name'} value={formData.contactName} onChange={handleChange} label={radioBtnValue == "My Class"?'Teacher Name':'Organizers Name'} labelStyle="font-semibold lg:min-w-[450px] gap-0" star='yes' />
+                    <MyInput forId="TeacherName" type="text" name="contactName" placeholder={radioBtnValue == "class"?'Teacher Name':'Organizers Name'} value={formData.contactName} onChange={handleChange} label={radioBtnValue == "class"?'Teacher Name':'Organizers Name'} labelStyle="font-semibold lg:min-w-[450px] gap-0" star='yes' />
                 </div>
                  <div className='mb-[19px]'>
-                <MyInput forId="TeacherEmail" type="email" name="email" placeholder={radioBtnValue == "My Class"?'Teacher Email':'Organizers Email'} value={formData.email} onChange={handleChange} label={radioBtnValue == "My Class"?'Teacher Email':'Organizers Email'} labelStyle="font-semibold lg:min-w-[450px] gap-0" star='yes' />
+                <MyInput forId="TeacherEmail" type="email" name="email" placeholder={radioBtnValue == "class"?'Teacher Email':'Organizers Email'} value={formData.email} onChange={handleChange} label={radioBtnValue == "class"?'Teacher Email':'Organizers Email'} labelStyle="font-semibold lg:min-w-[450px] gap-0" star='yes' />
                  </div>
                  <div className='mb-4'>
                 <MyInput forId="CreatePassword" type="password" name="password" placeholder="*******" value={formData.password} onChange={handleChange} label="Create Password" labelStyle="font-semibold lg:min-w-[450px] gap-0" star='yes' />

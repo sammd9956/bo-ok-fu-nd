@@ -92,7 +92,10 @@ const donationData = [
   },
 ];
 
-export default function DashboardDonationTable({setTotalRaised, setTotalDonors, setFlag}) {
+export default function DashboardDonationTable({setTotalRaised, setTotalDonors, setFlag, selectedCampaign}) {
+  console.log("xxxxxx",selectedCampaign);
+  
+  const [fetchDonationRefresh, setFetchDonationRefresh] = useState(false)
   const [donation, setDonation] = useState([])
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
@@ -141,8 +144,11 @@ export default function DashboardDonationTable({setTotalRaised, setTotalDonors, 
 
   const fetchDonation = async () => {
     try {
-      const res = await axios.get( `${server}/api/v1/don/get-donation`, { withCredentials: true } );
+      console.log("zzzzzz", selectedCampaign.campaign_id);
+      
+      const res = await axios.get( `${server}/api/v1/don/get-donation/${selectedCampaign?.campaign_id}`, { withCredentials: true } );
 
+      console.log("aaqqqq",res.data.donation);
       setDonation(res.data.donation);
       if (setTotalRaised) {
   setTotalRaised(res.data.totalRaised);
@@ -153,13 +159,13 @@ totalDonors);
 }
 
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
     }
   };
 
   fetchDonation();
 
-}, []);
+}, [fetchDonationRefresh, selectedCampaign]);
     
 
     const sendThankHandle = async (id) => {
@@ -190,7 +196,8 @@ totalDonors);
         
         toast(res.data.message);
         setOpenDialog(false);
-        setFlag(openDialog);
+        // setFlag(openDialog);
+        setFetchDonationRefresh((prev) => !prev)
         
       } catch (error) {
         console.log(error);
@@ -268,10 +275,10 @@ totalDonors);
                     {item.amount}
                   </TableCell>
                   <TableCell className="text-black text-[15px] font-poppins italic">
-                    {item.notes}
+                    {item.message}
                   </TableCell>
                   <TableCell className="text-center">
-                    {item.a_flag != '0' ? (
+                    {item.thank_you_sent != '0' ? (
                       <span className="text-spring-green font-semibold text-[15px] text-center">
                         Sent
                       </span>

@@ -54,7 +54,7 @@ const transport = nodemailer.createTransport({
 })
 
 const sendMail = async({id, to, subject, html}) => {
-  console.log("smtp", process.env.SMTP_USER);
+  console.log("smtpppp", process.env.SMTP_USER);
   
   try {
      const updated = await updateDonationOnMail(id);

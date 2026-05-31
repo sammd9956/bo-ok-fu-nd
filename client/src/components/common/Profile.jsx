@@ -17,7 +17,7 @@ const Profile = () => {
             <div className='flex items-center gap-2.5'>
                 <div className='flex flex-col items-end'>
                     <p className='text-[15px] text-black font-poppins font-bold'>
-                        {user?.teacher_name.toUpperCase()}
+                        {user?.full_name.toUpperCase()}
                     </p>
 
                     <p className='text-[12px] text-black font-poppins'>

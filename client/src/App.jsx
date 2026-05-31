@@ -26,11 +26,11 @@ function App() {
   useEffect(() => {
   // console.log(" GET ME RUN");
 
-  axios.get(`${server}/api/v1/fund/get-me`, {
+  axios.get(`${server}/api/v1/user/get-me`, {
     withCredentials: true
   })
   .then(({ data }) => {
-    // console.log("GET ME SUCCESS:", data);
+    console.log("GET ME SUCCESS:", data);
 
     if (data?.user) {
       dispatch(userExist(data.user));
