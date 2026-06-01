@@ -16,7 +16,6 @@ const getMyCampaignsService = async (userId) => {
     return campaigns;
 };
 const getCampaignsByFundCodeService = async (fundcode) => {
-console.log("fundCode", fundcode);
 
    try {
      const [campaigns] = await pool.query( `SELECT c.campaign_id, c.fund_code, c.campaign_name, c.goal_amount, c.message, c.start_date, c.end_date, u.full_name, u.email, u.role FROM tbl_campaigns c INNER JOIN tbl_users u ON c.user_id = u.user_id WHERE c.fund_code = ?`,[fundcode] );
@@ -28,5 +27,29 @@ console.log("fundCode", fundcode);
    }
 };
 
+const getCampaignByCampainIdService = async (campaignid) => {
+    try {
+     const [campaigns] = await pool.query( "SELECT campaign_id, campaign_type, campaign_name, goal_amount, start_date, end_date, message FROM tbl_campaigns WHERE campaign_id = ?", [campaignid]);
 
-export { findCampaignByFundCode, getMyCampaignsService, getCampaignsByFundCodeService };
+    return campaigns;
+   } catch (error) {
+    console.log(error);
+    
+   }
+}
+
+const updateCmpaignBycampaignIdService = async (id, campName, startDate, endDate, goalAmount, message) => {
+    try {
+     const [result] = await pool.query( "UPDATE tbl_campaigns SET campaign_name = ?, goal_amount = ?, start_date= ?, end_date = ?, message = ? WHERE campaign_id = ?", [campName, goalAmount, startDate, endDate, message, id]);
+
+    if (result.affectedRows === 0) {
+    throw new Error("Campaign not found");
+  }
+   } catch (error) {
+    console.log(error);
+    
+   }
+}
+
+
+export { findCampaignByFundCode, getMyCampaignsService, getCampaignsByFundCodeService, getCampaignByCampainIdService, updateCmpaignBycampaignIdService };

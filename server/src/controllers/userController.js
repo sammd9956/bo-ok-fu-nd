@@ -1,16 +1,12 @@
 import { TryCatch } from "../../middleware/error.js";
 import { sendToken } from "../../utils/feature.js";
 import { ErrorHandler } from "../../utils/utility.js";
-import { findUserByEmail, getMyProfile } from "../models/userModel.js";
+import { findUserByEmail, getMyProfile, updateProfileServic } from "../models/userModel.js";
 import bcrypt from 'bcrypt';
 
 const userSignIn = TryCatch(async (req, res, next) => {
     const { email, password } = req.body;
 
-    
-    console.log("email",email);
-    console.log("pass",password);
-    
     
     if (!email || !password) {
         return next(new ErrorHandler("Email and password required", 400));
@@ -43,4 +39,19 @@ const getMe = TryCatch(async(req, res, next) => {
     return res.status(200).json({success: true, user: myProfile})
 })
 
-export {userSignIn, getMe}
+const updateProfile = TryCatch(async(req, res, next) => {
+    console.log("userreq",req.user);
+    console.log("userbody",req.body);
+    const {email} = req.user;
+    const {fullName, password} = req.body;
+    if(!fullName || !password){
+        return next(new ErrorHandler("All fields are required", 400));
+    }
+    const hashedPass = await bcrypt.hash(password, 10);
+    const result = await updateProfileServic(fullName, email, hashedPass);
+    return res.status(200).json({success: true})
+})
+
+
+
+export {userSignIn, getMe, updateProfile}

@@ -19,5 +19,5 @@ CREATE TABLE IF NOT EXISTS tbl_campaigns (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES tbl_users(user_id)
 ) ENGINE=InnoDB;

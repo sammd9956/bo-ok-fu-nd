@@ -53,7 +53,7 @@ function App() {
           <Route path="/dashboard/:don_id?" element={<Dashboard />} />
           {/* <Route path="/edit-campaign" element={<EditCampaign />} />
            */}
-           <Route path="/edit-campaign" element={<EditCampaign />} />
+           <Route path="/edit-campaign/:campaignid?" element={<EditCampaign />} />
           <Route path="/create-new-campaign" element={<EditCampaign />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/e-gift-card" element={<EGiftCard />} />

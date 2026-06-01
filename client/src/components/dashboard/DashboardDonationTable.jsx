@@ -93,7 +93,6 @@ const donationData = [
 ];
 
 export default function DashboardDonationTable({setTotalRaised, setTotalDonors, setFlag, selectedCampaign}) {
-  console.log("xxxxxx",selectedCampaign);
   
   const [fetchDonationRefresh, setFetchDonationRefresh] = useState(false)
   const [donation, setDonation] = useState([])
@@ -144,11 +143,9 @@ export default function DashboardDonationTable({setTotalRaised, setTotalDonors, 
 
   const fetchDonation = async () => {
     try {
-      console.log("zzzzzz", selectedCampaign.campaign_id);
       
       const res = await axios.get( `${server}/api/v1/don/get-donation/${selectedCampaign?.campaign_id}`, { withCredentials: true } );
 
-      console.log("aaqqqq",res.data.donation);
       setDonation(res.data.donation);
       if (setTotalRaised) {
   setTotalRaised(res.data.totalRaised);

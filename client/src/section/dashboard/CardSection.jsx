@@ -26,7 +26,7 @@ import MySwitch from '../../components/common/MySwitch'
 
 
 const CardSection = ({totalRaised, totalDonors, campaigns=[], selectedCampaign}) => {
-    
+    const [donations, setDonations] = useState([]);
     const [sortedData, setSortedData] = useState()
     const [checked, setChecked] = useState(false)
     const [openDialog, setOpenDialog] = useState(false);
@@ -54,20 +54,27 @@ const CardSection = ({totalRaised, totalDonors, campaigns=[], selectedCampaign})
 
       const fetchData = async() => {
   try {
-            const res = await axios.get( `${server}/api/v1/don/get-donation`, { withCredentials: true } );
+            const res = await axios.get( `${server}/api/v1/don/get-donation/${selectedCampaign?.campaign_id}`, { withCredentials: true } );
+
+            setSortedData(res.data.donation);
           
             
-            setSortedData(res.data.donation)
-            
         } catch (error) {
-            console.log(error.reponse);
+            console.log(error.response.data);
             
         }
       }
       fetchData()
      
     }, []);
-    const isWholeSchool = user?.fund_type === "school";
+    const fetchDonation = async () => {
+       
+        const res = await axios.get( `${server}/api/v1/don/get-donation/${selectedCampaign?.campaign_id}`, { withCredentials: true } );
+         
+          setSortedData(res.data?.donation);
+            setOpenDialog(true)
+    }
+    const isWholeSchool = user?.role === "school";
 
 /* const currentGoal = isWholeSchool
     ? selectedCampaign?.goal_amount
@@ -75,7 +82,7 @@ const CardSection = ({totalRaised, totalDonors, campaigns=[], selectedCampaign})
     const currentGoal = selectedCampaign?.goal_amount;
 
 const currentTitle = isWholeSchool
-    ? selectedCampaign?.title
+    ? selectedCampaign?.campaign_name
     : user?.fund_name;
 
 const currentDescription = isWholeSchool
@@ -86,6 +93,7 @@ const currentDescription = isWholeSchool
     const percentage = currentGoal > 0 ? (totalRaised / currentGoal) * 100 : 0;
       
       
+    
     return (
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-[26px]'>
             <div className='bg-outline-border rounded-[20px] pt-9 pl-[38px] pr-[42px] pb-[54px] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]'>
@@ -119,7 +127,9 @@ const currentDescription = isWholeSchool
                     <p className='text-xl font-poppins font-extrabold text-bright-green'>$000.00</p>
                 </div>
 
-                <p onClick={() => setOpenDialog(true)} className='text-[15px] font-poppins text-electric-blue underline hover:cursor-pointer mb-[17px]'>Click to view transaction history</p>
+                {/* <p onClick={() => setOpenDialog(true)} className='text-[15px] font-poppins text-electric-blue underline hover:cursor-pointer mb-[17px]'>Click to view transaction history</p> */}
+
+                <p onClick={() => fetchDonation()} className='text-[15px] font-poppins text-electric-blue underline hover:cursor-pointer mb-[17px]'>Click to view transaction history</p>
 
                 <MyButton variant="outline" text="Click Here to Redeem Funds" style="w-full" onClick={() => navigate('/e-gift-card')} />
             </div>
@@ -188,8 +198,8 @@ const currentDescription = isWholeSchool
                                                     {item?.message}
                                                 </TableCell>
                                                 <TableCell className="text-black text-[15px] font-poppins font-bold">
-                                                    {/* {item?.transaction_type.charAt(0).toUpperCase() + item?.transaction_type.slice(1)} */}
-                                                    asasasasas
+                                                    {item?.transaction_type.charAt(0).toUpperCase() + item?.transaction_type.slice(1)}
+                                                  
                                                 </TableCell>
                                                 <TableCell className="text-bright-green text-[15px] font-poppins font-bold">
                                                     +${item?.amount}

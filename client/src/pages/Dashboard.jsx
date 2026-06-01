@@ -27,7 +27,6 @@ const Dashboard = () => {
             const res = await axios.get( `${server}/api/v1/camp/my-campaign`, { withCredentials: true } );
 
             const allCampaigns = res.data?.campaigns || [];
-            console.log(allCampaigns);
             
 
             setCampaigns(allCampaigns);
@@ -49,7 +48,6 @@ const Dashboard = () => {
     }
 
 }, [user]);
-console.log("selected", selectedCampaign);
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { pool } from "../../config/db.js";
 import { TryCatch } from "../../middleware/error.js";
 import { ErrorHandler } from "../../utils/utility.js";
-import {findCampaignByFundCode, getCampaignsByFundCodeService, getMyCampaignsService} from "../models/campaignModel.js";
+import {findCampaignByFundCode, getCampaignsByFundCodeService, getMyCampaignsService, getCampaignByCampainIdService, updateCmpaignBycampaignIdService} from "../models/campaignModel.js";
 import {v4 as uuidv4} from 'uuid';
 
 const createNewCompaign = TryCatch(async (req, res, next) => {
@@ -44,6 +44,19 @@ const getCampByFundCode = TryCatch(async(req, res, next) => {
     res.status(200).json({success: true, campaign})
 })
 
+const getCampaignByCampaignId = TryCatch(async(req, res, next) => {
+    const {campaignid} = req.params;
+    const [campaign] = await getCampaignByCampainIdService(campaignid);
+    res.status(200).json({success: true, campaign})
+})
+
+const updateCmpaignBycampaignId = TryCatch(async(req, res, next) => {
+    console.log("reqp", req.body)
+    const {id, campName, startDate, endDate, goalAmount, message} = req.body;
+    const result = await updateCmpaignBycampaignIdService(id, campName, startDate, endDate, goalAmount, message);
+    res.status(200).json({success: true, message: "Campaign updated successfully"})
+})
 
 
-export { createNewCompaign, getCampaignByFundCode, getCampaign, getCampByFundCode }
+
+export { createNewCompaign, getCampaignByFundCode, getCampaign, getCampByFundCode, getCampaignByCampaignId, updateCmpaignBycampaignId}

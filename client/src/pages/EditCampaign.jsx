@@ -36,11 +36,11 @@ const EditCampaign = () => {
 
     const { radioBtnValue } = useWhoFundValue()
 
-    const nameLabel = user?.fund_type == "My Class" ? 'Name of Fund' : 'Name of Campaign';
-    const namePlaceholder = user?.fund_type == "My Class" ? "Class Book Fund" : "Organizer Book Fund";
-    const nameForId = user?.fund_type == "My Class" ? 'NameOfFund' : 'NameOfCampaign';
+    const nameLabel = campaignDetails?.campaign_type == "class" ? 'Name of Fund' : 'Name of Campaign';
+    const namePlaceholder = campaignDetails?.campaign_type == "class" ? "Class Book Fund" : "Organizer Book Fund";
+    const nameForId = campaignDetails?.campaign_type == "class" ? 'NameOfFund' : 'NameOfCampaign';
 
-    const calenderLabel = user?.fund_type == "My Class" ? 'Enter start and end date' : 'Date of Campaign ';
+    const calenderLabel = campaignDetails?.campaign_type == "class" ? 'Enter start and end date' : 'Date of Campaign ';
 
     const location = useLocation();
 
@@ -59,6 +59,19 @@ const EditCampaign = () => {
         }))
     }
 
+  useEffect(() => {
+      const getCampaignDetails = async() => {
+        try{
+            const res = await axios.get(`${server}/api/v1/camp/get-campaigns/${params.campaignid}`, {withcredential: true});
+            console.log("campaign details", res.data);
+            setCampaignDetails(res.data.campaign);
+        } catch(error){
+            console.log(error)
+        }
+    }
+    getCampaignDetails();
+  }, [])
+
     const handleCampaignCreate = async () => {
          try {
             const fromDate = date?.from ? formatMySQLDate(date.from) : "";
@@ -74,10 +87,9 @@ const EditCampaign = () => {
                 }
                 console.log("campaignPayload", campaignPayload);
                 
-        const res = await axios.post("http://localhost:3000/api/v1/camp/new-campaign", campaignPayload, {withCredentials: true});
-        console.log(res.data);
-        
+        const res = await axios.post("http://localhost:3000/api/v1/camp/new-campaign", campaignPayload, {withCredentials: true});     
         toast.success(res.data.message);
+        navigate("/dashboard");
          } catch (error) {
             console.log(error.response);
             
@@ -92,31 +104,31 @@ const EditCampaign = () => {
         return;
         
       }
-    
+    console.log("campaignDetails", campaignDetails)
     if (!user) return;
 
     setFormData({
-        fundName: user?.fund_name || "",
-        startDate: user?.start_date || "",
-        endDate: user?.end_date || "",
-        goal: user?.goal || "",
-        message: user?.message || "",
-        id: user?.fund_id || ""
+        fundName: campaignDetails?.campaign_name || "",
+        startDate: campaignDetails?.start_date || "",
+        endDate: campaignDetails?.end_date || "",
+        goal: campaignDetails?.goal || "",
+        message: campaignDetails?.message || "",
+        id: campaignDetails?.campaign_id || ""
     });
 
-    setSelectedGoal(Number(user?.goal || 0));
+    setSelectedGoal(Number(campaignDetails?.goal_amount || 0));
 
     setDate({
-        from: user?.start_date
-            ? new Date(user.start_date)
+        from: campaignDetails?.start_date
+            ? new Date(campaignDetails.start_date)
             : undefined,
 
-        to: user?.end_date
-            ? new Date(user.end_date)
+        to: campaignDetails?.end_date
+            ? new Date(campaignDetails.end_date)
             : undefined
     });
 
-}, [user, isCreatePage]);
+}, [campaignDetails, isCreatePage]);
 
 
 const handleUpdate = async() => {
@@ -125,20 +137,22 @@ const handleUpdate = async() => {
         const toDate = date?.to ? formatMySQLDate(date.to) : "";
     
     const payload = {               
-            fundName: formData.fundName,
+            campName: formData.fundName,
             startDate: fromDate,
             endDate: toDate,
             goalAmount: selectedGoal,
             message: formData.message,
             id: formData.id
             }
+            console.log("payload", payload)
     // const res = await axios.post("http://localhost:3000/api/v1/camp/update-campaign", payload, {withCredentials: true});
-    const res = await axios.put(`${server}/api/v1/fund/edit-campaign`, payload, {withCredentials: true});
+    const res = await axios.put(`${server}/api/v1/camp/update-campaign`, payload, {withCredentials: true});
     console.log(res.data);
     
     toast.success(res.data.message);
     /* navigate("/dashboard")
      window.location.reload(); */
+     navigate("/dashboard");
     
     } catch (error) {
         console.log(error);

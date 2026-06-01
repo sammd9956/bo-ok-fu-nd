@@ -1,11 +1,8 @@
 import MyButton from "@/components/common/MyButton";
 import Navigate from "@/components/common/Navigate";
 import CopyCampaign from "@/components/dashboard/CopyCampaign";
-import { server } from "@/constatnts/config";
 import useWhoFundValue from "@/store/useWhoFundValue";
-import axios from "axios";
 import { SquarePen } from "lucide-react";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +15,6 @@ const DashboardHeader = ({
   const { radioBtnValue, setRadioBtnValue } = useWhoFundValue();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
-  
 
   if (!user) return null;
 
@@ -38,18 +34,21 @@ const DashboardHeader = ({
             />
           )}
         </div>
-        <div className="flex flex-col lg:flex-row lg:items-center gap-[7px] lg:gap-[15px]">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-[7px] lg:gap-[15px] relative">
           {/* <p className='text-gray-800 text-xl font-poppins font-bold'>{user?.fund_type}: <span className='font-normal'>{user?.fund_name.toUpperCase()}</span></p> */}
           {user?.role === "class" ? (
             <p className="text-gray-800 text-xl font-poppins font-bold">
               {" "}
-              {user?.role}:{" "}
+              {user?.role == "class" ?  "My Class" : ""}:{" "}
               <span className="font-normal">
                 {" "}
                 {selectedCampaign?.campaign_name?.toUpperCase()}{" "}
               </span>{" "}
             </p>
           ) : (
+            <>
+            <p className="text-gray-800 text-xl font-poppins font-bold">{user?.role == "school" ? "Whole Schoole" : ""}: {selectedCampaign?.campaign_name.toUpperCase()}</p>
+            <div className="absolute top-full ">
             <select
               value={selectedCampaign?.campaign_id || ""}
               className="border px-3 py-1 rounded text-gray-800 text-xl font-poppins"
@@ -63,14 +62,16 @@ const DashboardHeader = ({
             >
               {campaigns.map((campaign) => (
                 <option key={campaign.campaign_id} value={campaign.campaign_id}>
-                  {campaign.campaign_name}
+                  {campaign.campaign_name.toUpperCase()}
                 </option>
               ))}
             </select>
+            </div>
+            </>
           )}
 
           <p
-            onClick={() => navigate("/edit-campaign")}
+            onClick={() => navigate(`/edit-campaign/${selectedCampaign?.campaign_id}`)}
             className="group flex items-center gap-2 cursor-pointer w-fit font-poppins font-semibold text-[10px] transition-all duration-300 ease-in-out active:translate-y-0.5"
           >
             <span className="bg-primary-color group-hover:bg-primary-color-dark rounded-full p-1 flex items-center justify-center transition-all duration-300 ease-in-out">
@@ -88,7 +89,7 @@ const DashboardHeader = ({
           fundCode={selectedCampaign?.fund_code}
           campaignId={selectedCampaign?.campaign_id}
         />
-        <Navigate fundCode={user.fund_code} />
+        <Navigate fundCode={selectedCampaign?.fund_code} campaignId={selectedCampaign?.campaign_id} />
       </div>
     </div>
   );

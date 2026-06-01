@@ -17,7 +17,6 @@ const location = useLocation();
 const locationParams = new URLSearchParams(location.search);
 const campaignId = locationParams.get("campaign");
 const fund = locationParams.get("fund");
-console.log("loc",fund);
 
 
 useEffect(() => {
@@ -26,7 +25,6 @@ useEffect(() => {
       const res = await axios.get( `${server}/api/v1/camp/get-campaign/${fund}`, { withCredentials: true } );
 
       setCampData(res.data?.campaign);
-      console.log(res.data?.campaign);
     } catch (error) {
       console.log(error.response);
     }
@@ -76,7 +74,8 @@ const handleChange = (e) => {
   state: {
     donatedAmount: formData.amount,
     donorName: formData.donorName,
-    campaignName: campData?.fund_name,
+    campaignName: campData?.campaign_name,
+    campaign: campaignId,
     uuid: fund
   },
 });

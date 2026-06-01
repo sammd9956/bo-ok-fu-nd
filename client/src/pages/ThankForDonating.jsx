@@ -12,8 +12,7 @@ const ThankForDonating = () => {
      const navigate = useNavigate()
       const donatedAmount = location.state?.donatedAmount;
       const uuid = location.state?.uuid;
-      console.log("uuid", uuid);
-      
+      const campaign = location.state?.campaign;
       
     return (
         <div className='container mx-auto px-2 lg:px-4 flex items-center justify-center my-6'>
@@ -52,7 +51,7 @@ const ThankForDonating = () => {
                             <p className='text-black font-poppins text-base font-medium'>Copy Campaign Link</p>
                         </div>
 
-                          <MyButton variant='primary' text="Return to Campaign" style='w-full lg:w-3/4 mx-auto flex mb-3' onClick={()=>navigate(`/campaign/view-campaign/${uuid}`)}/>
+                          <MyButton variant='primary' text="Return to Campaign" style='w-full lg:w-3/4 mx-auto flex mb-3' onClick={()=>navigate(`/campaign/view-campaign?fund=${uuid}&campaign=${campaign}`)}/>
                     {/* </div> */}
 
                 </div>

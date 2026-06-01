@@ -10,12 +10,12 @@ const makeDonation = async ( campaignId, fundId, donorName, donorEmail, amount, 
 //get all donation against fundID
 
 const getDonationBycampaignId = async (campaignid) => {
-    const [result] = await pool.query("SELECT donation_id, donor_name, donor_email, amount, message, donated_at, thank_you_sent FROM tbl_donations WHERE campaign_id = ? ", [campaignid])
+    const [result] = await pool.query("SELECT donation_id, donor_name, donor_email, amount, message, donated_at, thank_you_sent, transaction_type FROM tbl_donations WHERE campaign_id = ? ", [campaignid])
     return result;
 }
 
 const getDonationById = async(id) => {
-     const [result] = await pool.query("SELECT donation_id, donor_name, donor_email, amount, message, thank_you_sent FROM tbl_donations WHERE donation_id = ? ", [id])
+     const [result] = await pool.query("SELECT donation_id, donor_name, donor_email, amount, message, thank_you_sent, transaction_type FROM tbl_donations WHERE donation_id = ? ", [id])
     return result;
 }
 
