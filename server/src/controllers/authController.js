@@ -1,5 +1,5 @@
 import { TryCatch } from "../../middleware/error.js";
-import { forgotPasswordService } from "../models/authModel.js";
+import { forgotPasswordService, rsetPasswordService } from "../models/authModel.js";
 
 const forgotPassword = TryCatch(async(req, res, next) => {
     const {email} = req.body;
@@ -8,9 +8,9 @@ await forgotPasswordService(email);
 })
 
 const resetPassword = TryCatch(async(req, res, next) => {
-    const {email, token} = req.body;
+    const {email, token, password} = req.body;
      console.log("Controller Hit");
-    // await forgotPasswordService(email);
+    await rsetPasswordService(token, password);
     res.status(200).json({success: true, message: "Password changed successfully"})
 })
 
