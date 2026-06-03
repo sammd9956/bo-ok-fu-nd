@@ -17,6 +17,7 @@ import axios from 'axios'
 import { server } from './constatnts/config'
 import { useDispatch } from 'react-redux'
 import { userExist, userNotExist } from './redux/slices/authSlices'
+import ResetPassword from './pages/Resetpassword'
 
 function App() {
   const [count, setCount] = useState(0);
@@ -48,6 +49,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Homepage />} />
           <Route path="/about" element={<About />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/log-in" element={<LoginPage />} />
           <Route path="/create-bookfund" element={<ClassCreateBookFund />} />
           <Route path="/dashboard/:don_id?" element={<Dashboard />} />
