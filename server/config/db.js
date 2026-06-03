@@ -14,10 +14,10 @@ export const connectDB = async () => {
     password: process.env.DB_PASSWORD
   });
 
-  const dbName = process.env.DB_NAME;
+  const DB_NAME = process.env.DB_NAME;
 
   await conn.query(
-    `CREATE DATABASE IF NOT EXISTS \`${dbName}\``
+    `CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\``
   );
 
   await conn.end();
@@ -27,7 +27,7 @@ export const connectDB = async () => {
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: dbName,
+    database: DB_NAME,
     waitForConnections: true,
     connectionLimit: 10
   });
