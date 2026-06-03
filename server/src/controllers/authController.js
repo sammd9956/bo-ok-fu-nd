@@ -1,10 +1,13 @@
 import { TryCatch } from "../../middleware/error.js";
+
 import { ErrorHandler } from "../../utils/utility.js";
 import {getSocket} from "../../server.js";
+
 import { forgotPasswordService, rsetPasswordService } from "../models/authModel.js";
 
 const forgotPassword = TryCatch(async(req, res, next) => {
     const {email} = req.body;
+
 const resetMeta = await forgotPasswordService(email);
     res.status(200).json({success: true, message: "Password reset link sent successfully", resetMeta})
 })
@@ -25,8 +28,20 @@ const resetPassword = TryCatch(async(req, res, next) => {
     io.emit("PASSWORD_RESET_SUCCESS", {
     message: "Password changed successfully",
   });
-    res.status(200).json({success: true, message: "Password changed successfully"})
+
+    res.status(200).json({success: true, message: "Password reset link sent successfully"})
 })
+
+/* const resetPassword = TryCatch(async(req, res, next) => {
+    const {email, token, password} = req.body;
+     console.log("Controller Hit");
+    await rsetPasswordService(token, password);
+        const io = getSocket();
+    io.emit("PASSWORD_RESET_SUCCESS", {
+    message: "Password changed successfully",
+  });
+    res.status(200).json({success: true, message: "Password changed successfully"})
+}) */
 
 
 export {forgotPassword, resetPassword}

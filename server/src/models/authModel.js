@@ -17,9 +17,11 @@ const forgotPasswordService = async (email) => {
 console.log("User Found:", user.email);
     const token = crypto.randomBytes(32).toString("hex");
 
+
     const expiresAt = new Date( Date.now() + 2 * 60 * 1000 );
 
     const [result] = await pool.query( ` INSERT INTO tbl_password_reset_tokens ( user_id, token_hash, token_type, expires_at ) VALUES (?, ?, ?, ?) `, [ user.user_id, token, "PASSWORD_RESET", expiresAt ] );
+
 
     const resetLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
 
@@ -28,8 +30,10 @@ console.log("User Found:", user.email);
         subject: "Reset Password",
         html: resetPasswordTemplate(resetLink)
     });
+
     const [remainingTime] = await pool.query(`SELECT TIMESTAMPDIFF(SECOND, created_at, expires_at) AS remaining_seconds FROM tbl_password_reset_tokens WHERE token_hash = ?`, [token]);
     return {email: user.email, expiresAt, remainingTime: remainingTime[0].remaining_seconds};
+
 };
 
 const rsetPasswordService = async (token, password) => {
@@ -41,7 +45,9 @@ const rsetPasswordService = async (token, password) => {
     const resetToken = rows[0];
     const hashedPass = await bcrypt.hash(password, 10);
     await pool.query("UPDATE tbl_users SET password = ? WHERE user_id = ? ", [hashedPass, resetToken.user_id]);
+
     await pool.query("UPDATE tbl_password_reset_tokens SET used_at = NOW() WHERE id = ? ", [resetToken.id])
+
 
     } catch (error) {
         console.log(error);

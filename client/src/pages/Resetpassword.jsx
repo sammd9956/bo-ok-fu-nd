@@ -35,9 +35,7 @@ console.log(params.token);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
-        {!isSuccess ? (
-          <>
-          <h1 className="text-3xl font-bold text-center mb-2">
+        <h1 className="text-3xl font-bold text-center mb-2">
           Reset Password
         </h1>
 
@@ -80,14 +78,13 @@ console.log(params.token);
             Reset Password
           </button>
         </form>
-          </>
-        ) : (
-          <div className="mt-5 p-4 bg-green-100 text-green-700 rounded-lg text-center">
+        {
+          isSuccess && (
+            <div className="mt-5 p-4 bg-green-100 text-green-700 rounded-lg text-center">
               Your password has been reset successfully! You can now log in with your new password.
             </div>
-        )
-      }
-       
+          )
+        }
       </div>
     </div>
   );
