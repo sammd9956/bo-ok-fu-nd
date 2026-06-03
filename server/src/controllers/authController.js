@@ -1,16 +1,32 @@
 import { TryCatch } from "../../middleware/error.js";
-import crypto from 'crypto';
-import { pool } from '../../config/db.js';
-
+import { ErrorHandler } from "../../utils/utility.js";
+import {getSocket} from "../../server.js";
+import { forgotPasswordService, rsetPasswordService } from "../models/authModel.js";
 
 const forgotPassword = TryCatch(async(req, res, next) => {
-    const otp = Math.floor(Math.random() * 900000 + 100000);
-    const token  = crypto.randomBytes(32).toString("hex").slice(0, 6);
-    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
-    const expires_at = new Date(Date.now() + 2 * 60 * 1000);
-
-    const result = await pool.query("INSERT INTO tbl_password_reset_tokens (user_id, token_hash, expires_at) VALUES (?,?,?)", [req.body.user_id, tokenHash, expires_at]);
-    res.status(200).json({success: true, message: "ok", otp, token, tokenHash, expires_at, id: result.insertId})
+    const {email} = req.body;
+const resetMeta = await forgotPasswordService(email);
+    res.status(200).json({success: true, message: "Password reset link sent successfully", resetMeta})
 })
 
-export { forgotPassword }
+const resetPassword = TryCatch(async(req, res, next) => {
+    const {email, token, newPassword, confirmPassword} = req.body;
+     console.log(req.body.payload);
+     console.log("token", token);
+     if(!token || !newPassword || !confirmPassword){
+        return next(new ErrorHandler("All feilds are required", 400))
+     }
+     if(newPassword !== confirmPassword){
+        return next (new ErrorHandler("password does not match", 400))
+     }
+    await rsetPasswordService(token, newPassword);
+    const io = getSocket();
+
+    io.emit("PASSWORD_RESET_SUCCESS", {
+    message: "Password changed successfully",
+  });
+    res.status(200).json({success: true, message: "Password changed successfully"})
+})
+
+
+export {forgotPassword, resetPassword}

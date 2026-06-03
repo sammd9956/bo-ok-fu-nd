@@ -76,4 +76,20 @@ const sendMail = async({id, to, subject, html}) => {
   }
 }
 
-export { sendEmail, sendMail };
+
+
+const sendMailForPasswordReset = async ({
+    to,
+    subject,
+    html
+}) => {
+
+    await transporter.sendMail({
+        from: process.env.EMAIL,
+        to,
+        subject,
+        html
+    });
+};
+
+export { sendEmail, sendMail, sendMailForPasswordReset };
