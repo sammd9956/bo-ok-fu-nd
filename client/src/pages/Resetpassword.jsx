@@ -12,7 +12,6 @@ const ResetPassword = () => {
 console.log(params.token);
 
   const resetPasswordHandler = async () => {
-    alert("asasasas")
     console.log("passssss", newPassword, confirmPassword)
     const payload = {
       token: params.token,
@@ -39,7 +38,11 @@ console.log(params.token);
           Reset Password
         </h1>
 
-        <p className="text-gray-500 text-center mb-6">
+      
+        {
+          !isSuccess ? (
+            <>
+              <p className="text-gray-500 text-center mb-6">
           Create a new password for your account.
         </p>
 
@@ -78,8 +81,8 @@ console.log(params.token);
             Reset Password
           </button>
         </form>
-        {
-          isSuccess && (
+            </>
+          ) : (
             <div className="mt-5 p-4 bg-green-100 text-green-700 rounded-lg text-center">
               Your password has been reset successfully! You can now log in with your new password.
             </div>
