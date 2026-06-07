@@ -66,11 +66,57 @@ const handleChange = (e) => {
     notes: formData.notes
   }
   
-  const res = await axios.post(`${server}/api/v1/don/make-donation`, payLoad, {withCredentials: true});
+  const res = await axios.post(`${server}/api/v1/raz/create-order`, payLoad, {withCredentials: true});
+  console.log("resss",res.data);
+  // const order = res.data.result;
+  const order = structuredClone(res.data.result);
+  console.log("orrrr", order);
+  
+  
+  console.log("orderidqqqq", order.id);
+  const {data} = await axios.get(`${server}/getkey`, {withCredentials: true});
+  console.log("0000000");
+  
+  console.log("qqqwqwqw", data.key);
+  console.log("111111111111");
+  
+  console.log("orderid", order.id);
+  
+  if (!order?.id) {
+  console.log("Order missing");
+  return;
+} else{
+  console.log("yesss",order.id);
+  
+}
+  const options = {
+    key: data.key,
+    amount: order.amount,
+    currency: order.currency,
+    order_id: order.id,
+    name: "X-men",
+    callback_url: `${server}/api/v1/raz/paymentverification`,
+        prefill: {
+            name: "Monster",
+            email: "gaurav.kumar@example.com",
+            contact: "9876543210"
+        },
+        theme: {
+            color: "#3399cc"
+        } 
+  }
+  console.log("asasasas");
+  console.log(window.Razorpay);
+  const razor = new window.Razorpay(options);
+    razor.open();
+  console.log("optttt", options);
+  
+    
+
   toast.success(res.data?.message)
 
       // navigate("/thank-for-donating");
-      navigate("/thank-for-donating", {
+      /* navigate("/thank-for-donating", {
   state: {
     donatedAmount: formData.amount,
     donorName: formData.donorName,
@@ -78,7 +124,7 @@ const handleChange = (e) => {
     campaign: campaignId,
     uuid: fund
   },
-});
+}); */
 
   } catch (error) {
     console.log(error.response);

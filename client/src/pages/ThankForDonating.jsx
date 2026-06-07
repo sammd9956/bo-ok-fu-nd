@@ -24,7 +24,7 @@ const ThankForDonating = () => {
                         <p className='text-black font-poppins text-[20px] text-center mb-2'>Your contribution is helping Mrs. Jackson’s class get closer to their reading goals</p>
                         <div className='border-[0.5px] border-mist-gray rounded-[10px] pt-[15px] pb-2.5 flex flex-col items-center justify-center w-full bg-white mb-[22px]'>
                             <p className='text-slate-gray font-poppins text-sm font-semibold'>AMOUNT DONATED</p>
-                            <p className='text-outline-border font-poppins text-[36px] font-semibold'>${donatedAmount.toFixed(2)}</p>
+                            <p className='text-outline-border font-poppins text-[36px] font-semibold'>${donatedAmount}</p>
                         </div>
                         <p className='text-black font-poppins text-sm '>Receipt sent to your email</p>
                     </div>
