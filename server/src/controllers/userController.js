@@ -1,5 +1,5 @@
 import { TryCatch } from "../../middleware/error.js";
-import { sendToken } from "../../utils/feature.js";
+import { cookieOptions, sendToken } from "../../utils/feature.js";
 import { ErrorHandler } from "../../utils/utility.js";
 import { findUserByEmail, getMyProfile, updateProfileServic } from "../models/userModel.js";
 import bcrypt from 'bcrypt';
@@ -31,6 +31,10 @@ const userSignIn = TryCatch(async (req, res, next) => {
    
 });
 
+const logOut = TryCatch(async(req, res, next) => {
+    return res.status(200).cookie("book_fund_token", "", {...cookieOptions, maxAge: 0}).json({success: true, message: "Loged out successfully"})
+})
+
 const getMe = TryCatch(async(req, res, next) => {
     console.log("userid",req.user);
     
@@ -54,4 +58,4 @@ const updateProfile = TryCatch(async(req, res, next) => {
 
 
 
-export {userSignIn, getMe, updateProfile}
+export {userSignIn, getMe, updateProfile, logOut}

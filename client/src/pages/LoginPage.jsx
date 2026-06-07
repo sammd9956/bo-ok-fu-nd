@@ -25,11 +25,11 @@ const LoginPage = () => {
         }
       }
        try {
-         const {data} = await axios.post(`${server}/api/v1/user/sign-in`, {email: Email, password: Password}, config)
+         const data = await axios.post(`${server}/api/v1/user/sign-in`, {email: Email, password: Password}, config)
          
-         console.log("data",data.user);
+         console.log("data",data.data.user);
          
-        dispatch(userExist(data.user))
+        dispatch(userExist(data.data.user))
         // toast.success(data.message)
          navigate("/dashboard");        
                
@@ -50,7 +50,7 @@ const LoginPage = () => {
                      <MyInput forId = "password" type = "password" placeholder="Enter Your Password" value={Password} onChange={(e) => setPassword(e.target.value)}  label="Password"/>
                      <div className='flex items-center justify-between w-full'>
                         <MyCheckbox label="Remember me" forId="rememberMe"/>
-                        <p><a href="#" className='text-purple-purple-500 text-sm font-bold font-poppins'>Forgot Password?</a></p>
+                        <p><a href="/forgot-pass" className='text-purple-purple-500 text-sm font-bold font-poppins'>Forgot Password?</a></p>
                      </div>
 
                    </div>
