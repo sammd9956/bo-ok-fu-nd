@@ -30,7 +30,6 @@ const createDonation = TryCatch(async (req, res, next) => {
 
 const makeDonations = TryCatch(async(req, res, next) => {
     const { campaignId, donorName, donorEmail, amount, notes } = req.body;
-    console.log("reqbody",req.body);
     
     const donation = await makeDonationService({ campaignId, donorName, donorEmail, amount, notes });
     res.status(201).json({ success: true, message: "Donation successful", donation });
@@ -41,7 +40,6 @@ const getDonation = TryCatch(async (req, res, next) => {
     
     // const fundId = req.user.id;
     const {campaignid} = req.params;
-    console.log("campinid", campaignid);
     
 
     const result = await getDonationBycampaignId(campaignid);
@@ -63,7 +61,6 @@ const getDonation = TryCatch(async (req, res, next) => {
 //find donation by id
 const findDonationById = TryCatch(async(req, res, next) => {
     const id = req.params.id;
-    console.log("ids",id);
     
     const [rows] = await getDonationById(id);
 
@@ -94,11 +91,7 @@ const sendThankYouMail = TryCatch(async(req, res, next) => {
 })
 
 const getPaymentDetails = TryCatch(async(req, res, next) => {
-    console.log(req.params);
-    
     const {paymentid} = req.params;
-    console.log(paymentid);
-    
     const paymentDetails = await getPaymentDetailService(paymentid);
     res.status(200).json({message: "ok", paymentDetails})
 })

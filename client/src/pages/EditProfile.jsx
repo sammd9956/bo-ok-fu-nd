@@ -55,9 +55,8 @@ const EditProfile = () => {
             email: formdata.email,
             password: password,
         }
-        console.log(payload);
         const res = await axios.put(`${server}/api/v1/user/update-profile`, payload, {withCredentials: true});
-        console.log(res.data);
+        
         toast.success(res.data.message);
         navigate("/dashboard");
         window.location.reload();

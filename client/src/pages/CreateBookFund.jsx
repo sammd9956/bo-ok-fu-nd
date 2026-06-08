@@ -72,7 +72,6 @@ const CreateBookFund = () => {
             goal: selectedGoal,
             message: formData.message
         }
-        console.log("payload", creatFundPayload);
         
      
         try {

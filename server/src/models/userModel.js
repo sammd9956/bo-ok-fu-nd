@@ -20,7 +20,6 @@ const getMyProfile = (email) => {
 };
 
 const updateProfileServic = async (fullName, email, password) => {
-  console.log("aaaaaaa", fullName, email, password);
   
   const [rows] = await pool.query( `UPDATE tbl_users SET full_name = ?, password = ?  WHERE email = ?`, [fullName, password, email] )
     return rows.length > 0 ? rows[0] : null;

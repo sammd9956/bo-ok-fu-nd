@@ -9,19 +9,17 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const params = useParams();
-console.log(params.token);
 
   const resetPasswordHandler = async () => {
-    console.log("passssss", newPassword, confirmPassword)
     const payload = {
       token: params.token,
       newPassword,
       confirmPassword
     }
-    console.log("payload", payload);
+    
       try{
         const res = await axios.patch(`${server}/api/v1/auth/reset-pass`, payload, {withCredentials: true});
-        console.log(res.data);
+        
         toast.success(res.data?.message);
         setIsSuccess(true)
       }catch(error){

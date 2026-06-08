@@ -25,9 +25,9 @@ const ForgotPassword = () => {
     
     const sendMailForResetPassword = async() => {
         try{
-            console.log(email);
+            
             const res = await axios.post(`${server}/api/v1/auth/forgot-pass`, {email}, {withCredentials: true});
-            console.log(res.data.resetMeta);
+           
             setTimer(res.data?.resetMeta?.remainingTime);
             setSent(true);
             socket.on("PASSWORD_RESET_SUCCESS", (data) => {

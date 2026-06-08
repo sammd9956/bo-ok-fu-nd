@@ -14,19 +14,17 @@ const ThankForDonating = () => {
     const location = useLocation();
      const navigate = useNavigate()
     //   const donatedAmount = location.state?.donatedAmount;
-      const uuid = location.state?.uuid;
-      const campaign = location.state?.campaign;
+    //   const uuid = location.state?.uuid;
+    //   const campaign = location.state?.campaign;
       const params = new URLSearchParams(location.search);
        const paymentid = params.get("reference");
-console.log("zzzzzzzzzzz",location.state);
 
       useEffect(() => {        
 
         try {
             const fetchPaymentDetails = async() =>{
             const res = await axios.get(`${server}/api/v1/raz/get-payment-details/${paymentid}`, {withCredentials: true});
-            setPaymentDetails(res?.data?.paymentDetails);        
-            console.log("sdasvzfzdv",res?.data?.paymentDetails);        
+            setPaymentDetails(res?.data?.paymentDetails);          
         }
         fetchPaymentDetails()
         } catch (error) {

@@ -17,9 +17,6 @@ const location = useLocation();
 const locationParams = new URLSearchParams(location.search);
 const campaignId = locationParams.get("campaign");
 const fund = locationParams.get("fund");
-console.log("pppp",fund);
-
-
 
 useEffect(() => {
   const fetchCamapaign = async () => {
@@ -69,22 +66,14 @@ const handleChange = (e) => {
   }
   
   const res = await axios.post(`${server}/api/v1/raz/create-order`, payLoad, {withCredentials: true});
-  console.log("resss",res.data);
   // const order = res.data.result;
   const order = structuredClone(res.data.result);
-  console.log("orrrr", order);
   
-  
-  console.log("orderidqqqq", order.id);
   const {data} = await axios.get(`${server}/getkey`, {withCredentials: true});
   
   if (!order?.id) {
-  console.log("Order missing");
   return;
-} else{
-  console.log("yesss",order.id);
-  
-}
+} 
   const options = {
     key: data.key,
     amount: order.amount,
@@ -102,14 +91,8 @@ const handleChange = (e) => {
             color: "#13159b"
         } 
   }
-  console.log("asasasas");
-  console.log(window.Razorpay);
   const razor = new window.Razorpay(options);
     razor.open();
-  console.log("optttt", options);
-  
-    
-
   toast.success(res.data?.message)
 
       // navigate("/thank-for-donating");

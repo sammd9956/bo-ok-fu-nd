@@ -1,7 +1,6 @@
 import { pool } from '../../config/db.js';
 
 export const create = async (data) => {
-    console.log("datass",data);
     
   const [result] = await pool.query(
     `

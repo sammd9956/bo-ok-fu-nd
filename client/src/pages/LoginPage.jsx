@@ -27,7 +27,6 @@ const LoginPage = () => {
        try {
          const data = await axios.post(`${server}/api/v1/user/sign-in`, {email: Email, password: Password}, config)
          
-         console.log("data",data.data.user);
          
         dispatch(userExist(data.data.user))
         // toast.success(data.message)

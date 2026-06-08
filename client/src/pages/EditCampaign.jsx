@@ -63,7 +63,6 @@ const EditCampaign = () => {
       const getCampaignDetails = async() => {
         try{
             const res = await axios.get(`${server}/api/v1/camp/get-campaigns/${params.campaignid}`, {withcredential: true});
-            console.log("campaign details", res.data);
             setCampaignDetails(res.data.campaign);
         } catch(error){
             console.log(error)
@@ -85,7 +84,6 @@ const EditCampaign = () => {
                     goalAmount: selectedGoal,
                     message: formData.message
                 }
-                console.log("campaignPayload", campaignPayload);
                 
         const res = await axios.post("http://localhost:3000/api/v1/camp/new-campaign", campaignPayload, {withCredentials: true});     
         toast.success(res.data.message);
@@ -104,7 +102,6 @@ const EditCampaign = () => {
         return;
         
       }
-    console.log("campaignDetails", campaignDetails)
     if (!user) return;
 
     setFormData({
@@ -144,10 +141,9 @@ const handleUpdate = async() => {
             message: formData.message,
             id: formData.id
             }
-            console.log("payload", payload)
+            
     // const res = await axios.post("http://localhost:3000/api/v1/camp/update-campaign", payload, {withCredentials: true});
     const res = await axios.put(`${server}/api/v1/camp/update-campaign`, payload, {withCredentials: true});
-    console.log(res.data);
     
     toast.success(res.data.message);
     /* navigate("/dashboard")

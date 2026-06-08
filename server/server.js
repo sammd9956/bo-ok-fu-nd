@@ -5,12 +5,6 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 import { runMigrations } from './src/database/migrate.js';
 dotenv.config();
-console.log("host", process.env.DB_HOST);
-console.log("userrr", process.env.DB_USER);
-console.log("passsss", process.env.DB_PASSWORD);
-console.log("nameeee", process.env.DB_NAME);
-
-
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
   const io = new Server(server, {
@@ -21,9 +15,9 @@ const server = http.createServer(app);
   })
   export const getSocket = () => io;
   io.on("connection", (socket) => {
-    console.log("New client connected:", socket.id);
+    // console.log("New client connected:", socket.id);
     socket.on("disconnected", () => {
-      console.log("Client disconnected:", socket.id);
+      // console.log("Client disconnected:", socket.id);
     })
   });
 
