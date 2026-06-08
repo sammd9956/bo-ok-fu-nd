@@ -65,7 +65,7 @@ function App() {
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/e-gift-card" element={<EGiftCard />} />
           <Route path="/campaign/view-campaign" element={<ViewCampaign />} />
-          <Route path="/thank-for-donating" element={<ThankForDonating />} />
+          <Route path="/thank-you" element={<ThankForDonating />} />
         </Route>
       </Routes>
       </MainLayout>

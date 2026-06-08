@@ -10,10 +10,25 @@ CREATE TABLE IF NOT EXISTS tbl_donations (
     amount DECIMAL(10,2) NOT NULL,
 
     message TEXT,
-    thank_you_sent ENUM("0", "1") DEFAULT "0",
+    transaction_type ENUM("donation", "redeem") DEFAULT "donation",
+
+    donation_status ENUM(
+        'pending',
+        'paid',
+        'failed',
+        'cancelled',
+        'refunded'
+    ) DEFAULT 'pending',
+
+    thank_you_sent ENUM('0','1') DEFAULT '0',
+
+    is_anonymous ENUM('0','1') DEFAULT '0',
 
     donated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
     FOREIGN KEY (campaign_id)
-    REFERENCES tbl_campaigns(campaign_id)
+        REFERENCES tbl_campaigns(campaign_id)
 ) ENGINE=InnoDB;

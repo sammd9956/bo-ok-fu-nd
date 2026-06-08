@@ -37,7 +37,6 @@ const makeDonations = TryCatch(async(req, res, next) => {
 
 //get all donation
 const getDonation = TryCatch(async (req, res, next) => {
-    console.log("reeeeee", req.params);
     
     // const fundId = req.user.id;
     const {campaignid} = req.params;
