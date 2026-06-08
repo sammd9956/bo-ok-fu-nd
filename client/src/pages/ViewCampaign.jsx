@@ -17,6 +17,8 @@ const location = useLocation();
 const locationParams = new URLSearchParams(location.search);
 const campaignId = locationParams.get("campaign");
 const fund = locationParams.get("fund");
+console.log("pppp",fund);
+
 
 
 useEffect(() => {
@@ -75,12 +77,6 @@ const handleChange = (e) => {
   
   console.log("orderidqqqq", order.id);
   const {data} = await axios.get(`${server}/getkey`, {withCredentials: true});
-  console.log("0000000");
-  
-  console.log("qqqwqwqw", data.key);
-  console.log("111111111111");
-  
-  console.log("orderid", order.id);
   
   if (!order?.id) {
   console.log("Order missing");
@@ -94,7 +90,8 @@ const handleChange = (e) => {
     amount: order.amount,
     currency: order.currency,
     order_id: order.id,
-    name: "X-men",
+    name: "BOOK FUND",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRl8dqlv1jSyrsGvyfuO_yp4HJ5l_Hi50FJY47A6p9pKeqrban-izUlZvs2w77kWWre8ArIuFy23niYkOeXyY1pbbMsniuQYsVQeCiDmYtgSQ&s=10",
     callback_url: `${server}/api/v1/raz/paymentverification`,
         prefill: {
             name: "Monster",
@@ -102,7 +99,7 @@ const handleChange = (e) => {
             contact: "9876543210"
         },
         theme: {
-            color: "#3399cc"
+            color: "#13159b"
         } 
   }
   console.log("asasasas");
@@ -128,6 +125,7 @@ const handleChange = (e) => {
 
   } catch (error) {
     console.log(error.response);
+    toast.error(error.response?.data?.message)
     
   }
     

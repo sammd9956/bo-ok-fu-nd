@@ -2,6 +2,7 @@ import { TryCatch } from "../../middleware/error.js";
 import { sendEmail, sendMail } from "../../utils/sendEmail.js";
 import { ErrorHandler } from "../../utils/utility.js";
 import { getDonationBycampaignId, getDonationById, makeDonation, makeDonationService } from "../models/donationModel.js";
+import { getPaymentDetailService } from "../services/paymentService.js";
 
 const createDonation = TryCatch(async (req, res, next) => {
 
@@ -92,7 +93,15 @@ const sendThankYouMail = TryCatch(async(req, res, next) => {
     res.status(200).json({success: true, message: "Thank you mail sent"})
 })
 
-//update mail flag
+const getPaymentDetails = TryCatch(async(req, res, next) => {
+    console.log(req.params);
+    
+    const {paymentid} = req.params;
+    console.log(paymentid);
+    
+    const paymentDetails = await getPaymentDetailService(paymentid);
+    res.status(200).json({message: "ok", paymentDetails})
+})
 
 
-export { createDonation, getDonation, findDonationById, sendThankYouMail, makeDonations };
+export { createDonation, getDonation, findDonationById, sendThankYouMail, makeDonations, getPaymentDetails };

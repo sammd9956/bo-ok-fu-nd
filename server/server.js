@@ -5,6 +5,11 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 import { runMigrations } from './src/database/migrate.js';
 dotenv.config();
+console.log("host", process.env.DB_HOST);
+console.log("userrr", process.env.DB_USER);
+console.log("passsss", process.env.DB_PASSWORD);
+console.log("nameeee", process.env.DB_NAME);
+
 
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);

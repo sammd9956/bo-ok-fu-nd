@@ -1,19 +1,40 @@
-import React from 'react'
-import verifiedImage from "@/assets/verified.png"
 import facebook from "@/assets/facebook.png"
 import link from "@/assets/link.png"
+import verifiedImage from "@/assets/verified.png"
 import MyButton from '@/components/common/MyButton'
+import { server } from '@/constatnts/config'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 
 
 const ThankForDonating = () => {
+    const [paymentDetails, setPaymentDetails] = useState()
     const location = useLocation();
      const navigate = useNavigate()
-      const donatedAmount = location.state?.donatedAmount;
+    //   const donatedAmount = location.state?.donatedAmount;
       const uuid = location.state?.uuid;
       const campaign = location.state?.campaign;
-      
+      const params = new URLSearchParams(location.search);
+       const paymentid = params.get("reference");
+console.log("zzzzzzzzzzz",location.state);
+
+      useEffect(() => {        
+
+        try {
+            const fetchPaymentDetails = async() =>{
+            const res = await axios.get(`${server}/api/v1/raz/get-payment-details/${paymentid}`, {withCredentials: true});
+            setPaymentDetails(res?.data?.paymentDetails);        
+            console.log("sdasvzfzdv",res?.data?.paymentDetails);        
+        }
+        fetchPaymentDetails()
+        } catch (error) {
+            console.log(error);            
+        }      
+       
+      }, [paymentid])
+
     return (
         <div className='container mx-auto px-2 lg:px-4 flex items-center justify-center my-6'>
             <div className="border-[0.5px] border-solid border-black rounded-[20px] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] grid grid-cols-1 lg:grid-cols-3 w-full lg:w-3/4 mx-auto">
@@ -24,7 +45,7 @@ const ThankForDonating = () => {
                         <p className='text-black font-poppins text-[20px] text-center mb-2'>Your contribution is helping Mrs. Jackson’s class get closer to their reading goals</p>
                         <div className='border-[0.5px] border-mist-gray rounded-[10px] pt-[15px] pb-2.5 flex flex-col items-center justify-center w-full bg-white mb-[22px]'>
                             <p className='text-slate-gray font-poppins text-sm font-semibold'>AMOUNT DONATED</p>
-                            <p className='text-outline-border font-poppins text-[36px] font-semibold'>${donatedAmount}</p>
+                            <p className='text-outline-border font-poppins text-[36px] font-semibold'>${Number(paymentDetails?.amount).toFixed(2)}</p>
                         </div>
                         <p className='text-black font-poppins text-sm '>Receipt sent to your email</p>
                     </div>
@@ -51,7 +72,7 @@ const ThankForDonating = () => {
                             <p className='text-black font-poppins text-base font-medium'>Copy Campaign Link</p>
                         </div>
 
-                          <MyButton variant='primary' text="Return to Campaign" style='w-full lg:w-3/4 mx-auto flex mb-3' onClick={()=>navigate(`/campaign/view-campaign?fund=${uuid}&campaign=${campaign}`)}/>
+                          <MyButton variant='primary' text="Return to Campaign" style='w-full lg:w-3/4 mx-auto flex mb-3' onClick={()=>navigate(`/campaign/view-campaign?fund=${paymentDetails?.fund_code}&campaign=${paymentDetails?.campaign_id}`)}/>
                     {/* </div> */}
 
                 </div>

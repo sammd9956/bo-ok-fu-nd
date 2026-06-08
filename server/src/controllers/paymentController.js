@@ -3,9 +3,14 @@ import { TryCatch } from "../../middleware/error.js";
 import { createOrder } from "../services/paymentService.js";
 import crypto from 'crypto';
 import Razorpay from '../../config/razorpay.js';
+import { ErrorHandler } from "../../utils/utility.js";
 
 const createOrders = TryCatch(async(req, res, next) =>{
     console.log("reqqqq",req.body);
+    const {campaignId, donorName, donorEmail, amount} = req.body;
+    if(!donorName || !donorEmail || !amount){
+      return next (new ErrorHandler("All fields are required", 400))
+    }
     
     const result = await createOrder(req.body);
     console.log("CREATE ORDER HIT");
@@ -27,11 +32,7 @@ const verifyPayment = async (req, res) => {
         "sha256",
         process.env.RAZORPAY_KEY_SECRET
       )
-      .update(
-        razorpay_order_id +
-        "|" +
-        razorpay_payment_id
-      )
+      .update( razorpay_order_id + "|" + razorpay_payment_id )
       .digest("hex");
 
   if (generatedSignature !== razorpay_signature) {
