@@ -16,24 +16,41 @@ const ForgotPassword = () => {
     // const socket = io("http://localhost:3000", {withCredentials: true});
     const socket = useRef(null);
 
-  useEffect(() => {
+  /* useEffect(() => {
     socket.current = io("http://localhost:3000", {
       withCredentials: true
     });
-  }, []);
+  }, []); */
+  useEffect(() => {
+  socket.current = io("http://localhost:3000", {
+    withCredentials: true,
+  });
+
+  socket.current.on("PASSWORD_RESET_SUCCESS", (data) => {
+    toast.success(data.message);
+    navigate("/log-in");
+  });
+
+  return () => {
+    socket.current?.off("PASSWORD_RESET_SUCCESS");
+    socket.current?.disconnect();
+  };
+}, [navigate]);
     
     
     const sendMailForResetPassword = async() => {
         try{
             
             const res = await axios.post(`${server}/api/v1/auth/forgot-pass`, {email}, {withCredentials: true});
+            console.log("qqqqqqqqqqqq", res.data);
+            
            
             setTimer(res.data?.resetMeta?.remainingTime);
             setSent(true);
-            socket.on("PASSWORD_RESET_SUCCESS", (data) => {
+            /* socket.on("PASSWORD_RESET_SUCCESS", (data) => {
                 toast.success(data.message);
                 navigate("/log-in")
-            })
+            }) */
         }catch(error){
             // console.log(error.response)
             toast.error(error.response?.data?.message);

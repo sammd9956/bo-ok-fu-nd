@@ -6,7 +6,7 @@ router.post("/forgot-pass", forgotPassword);
 
 router.patch("/reset-pass", resetPassword);
 
-router.post("/reset-pass", resetPassword);
+// router.post("/reset-pass", resetPassword);
 
 
 export default router;

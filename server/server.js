@@ -15,9 +15,9 @@ const server = http.createServer(app);
   })
   export const getSocket = () => io;
   io.on("connection", (socket) => {
-    // console.log("New client connected:", socket.id);
+    console.log("New client connected:", socket.id);
     socket.on("disconnected", () => {
-      // console.log("Client disconnected:", socket.id);
+      console.log("Client disconnected:", socket.id);
     })
   });
 

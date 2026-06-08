@@ -29,7 +29,7 @@ const resetPassword = TryCatch(async(req, res, next) => {
     message: "Password changed successfully",
   });
 
-    res.status(200).json({success: true, message: "Password reset link sent successfully"})
+    res.status(200).json({success: true, message: "Password reset successfully"})
 })
 
 /* const resetPassword = TryCatch(async(req, res, next) => {

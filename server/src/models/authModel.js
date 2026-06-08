@@ -31,8 +31,17 @@ console.log("User Found:", user.email);
         html: resetPasswordTemplate(resetLink)
     });
 
-    const [remainingTime] = await pool.query(`SELECT TIMESTAMPDIFF(SECOND, created_at, expires_at) AS remaining_seconds FROM tbl_password_reset_tokens WHERE token_hash = ?`, [token]);
-    return {email: user.email, expiresAt, remainingTime: remainingTime[0].remaining_seconds};
+    /* const [remainingTime] = await pool.query(`SELECT  expires_at FROM tbl_password_reset_tokens WHERE token_hash = ?`, [token]);
+    const tokenExp = remainingTime[0].expires_at - Date.now();
+    return {email: user.email, expiresAt, remainingTime: remainingTime[0].remaining_seconds}; */
+    const [timeRows] = await pool.query( `SELECT expires_at FROM tbl_password_reset_tokens WHERE token_hash = ?`, [token] );
+
+const expiresTime = new Date(timeRows[0].expires_at);
+
+// remaining time in seconds
+const remainingTime = Math.floor((expiresTime.getTime() - Date.now()) / 1000);
+
+return { email: user.email, expiresAt, remainingTime };
 
 };
 
@@ -46,7 +55,7 @@ const rsetPasswordService = async (token, password) => {
     const hashedPass = await bcrypt.hash(password, 10);
     await pool.query("UPDATE tbl_users SET password = ? WHERE user_id = ? ", [hashedPass, resetToken.user_id]);
 
-    await pool.query("UPDATE tbl_password_reset_tokens SET used_at = NOW() WHERE id = ? ", [resetToken.id])
+    await pool.query("UPDATE tbl_password_reset_tokens SET used_at = NOW() WHERE token_id = ? ", [resetToken.token_id])
 
 
     } catch (error) {
