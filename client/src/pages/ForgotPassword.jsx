@@ -42,15 +42,9 @@ const ForgotPassword = () => {
         try{
             
             const res = await axios.post(`${server}/api/v1/auth/forgot-pass`, {email}, {withCredentials: true});
-            console.log("qqqqqqqqqqqq", res.data);
-            
-           
             setTimer(res.data?.resetMeta?.remainingTime);
             setSent(true);
-            /* socket.on("PASSWORD_RESET_SUCCESS", (data) => {
-                toast.success(data.message);
-                navigate("/log-in")
-            }) */
+           
         }catch(error){
             // console.log(error.response)
             toast.error(error.response?.data?.message);

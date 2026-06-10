@@ -5,13 +5,11 @@ import MyTextArea from '@/components/common/MyTextArea'
 import { Progress } from '@/components/ui/progress'
 import { server } from '@/constatnts/config'
 import axios from 'axios'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const ViewCampaign = () => {
-  const cardRef = useRef(null);
-const squareCard = useRef(null);
   const [campData, setCampData] = useState(null)
   const [selectedValue,setSelectedValue] = useState("");
 // const [profileDets, setProfileDets] = useState(null);
@@ -20,7 +18,6 @@ const locationParams = new URLSearchParams(location.search);
 const campaignId = locationParams.get("campaign");
 const fund = locationParams.get("fund");
 
-
 useEffect(() => {
   const fetchCamapaign = async () => {
     try {
@@ -28,7 +25,7 @@ useEffect(() => {
 
       setCampData(res.data?.campaign);
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
     }
   };
 
@@ -56,89 +53,66 @@ const handleChange = (e) => {
 
   
   const navigate = useNavigate();
- useEffect(() => {
-  const initSquare = async () => {
-    try {
-      if (!window.Square) {
-        // console.log("Square not loaded");
-        return;
-      }
-
-      const container = document.getElementById("card-container");
-
-      if (!container) {
-        // console.log("Container missing");
-        return;
-      }
-
-      const payments = window.Square.payments(
-        import.meta.env.VITE_SQUARE_APP_ID,
-        import.meta.env.VITE_SQUARE_LOCATION_ID
-      );
-
-      const card = await payments.card();
-
-      await card.attach("#card-container");
-
-      squareCard.current = card;
-
-      // console.log("Square ready");
-    } catch (err) {
-      console.log("Square init error:", err);
-    }
-  };
-
-  initSquare();
-}, []);
-
-const handleDonate = async () => {
   
+  const handleDonate = async () => {
   try {
-
-    if (!squareCard.current) {
-      toast.error("Payment form not ready");
-      return;
-    }
-
-    const result =
-      await squareCard.current.tokenize();
-
-    if (result.status !== "OK") {
-      toast.error("Card validation failed");
-      return;
-    }
-    console.log("111111111");
-    
-    const sourceId = result?.token;
-    console.log("11122222111111");
-    const payload = {
-      campaignId,
-      // fundId: campData.fund_id,
-      donorName: formData.donorName,
-      donorEmail: formData.donorEmail,
-      amount: Number(formData.amount),
-      notes: formData.notes,
-      sourceId
-      
-    };
-    console.log("3333333");
-    const { data } = await axios.post( `${server}/api/v1/sqr/pay`, payload, { withCredentials: true } );
-    toast.success("Donation successful");
-
-    navigate(
-      `/thank-you?reference=${data.paymentId}`
-    );
-
-  } catch (err) {
-    console.log(err.response);
-
-    toast.error(
-      err?.response?.data?.message ||
-      "Payment failed"
-    );
+    const payLoad = {
+    campaignId: campaignId,
+    fundId: campData.fund_id,
+    donorName: formData.donorName,
+    donorEmail: formData.donorEmail,
+    amount: formData.amount,
+    notes: formData.notes
   }
-};
   
+  const res = await axios.post(`${server}/api/v1/raz/create-order`, payLoad, {withCredentials: true});
+  // const order = res.data.result;
+  const order = structuredClone(res.data.result);
+  
+  const {data} = await axios.get(`${server}/getkey`, {withCredentials: true});
+  
+  if (!order?.id) {
+  return;
+} 
+  const options = {
+    key: data.key,
+    amount: order.amount,
+    currency: order.currency,
+    order_id: order.id,
+    name: "BOOK FUND",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRl8dqlv1jSyrsGvyfuO_yp4HJ5l_Hi50FJY47A6p9pKeqrban-izUlZvs2w77kWWre8ArIuFy23niYkOeXyY1pbbMsniuQYsVQeCiDmYtgSQ&s=10",
+    callback_url: `${server}/api/v1/raz/paymentverification`,
+        prefill: {
+            name: "Monster",
+            email: "gaurav.kumar@example.com",
+            contact: "9876543210"
+        },
+        theme: {
+            color: "#13159b"
+        } 
+  }
+  const razor = new window.Razorpay(options);
+    razor.open();
+  toast.success(res.data?.message)
+
+      // navigate("/thank-for-donating");
+      /* navigate("/thank-for-donating", {
+  state: {
+    donatedAmount: formData.amount,
+    donorName: formData.donorName,
+    campaignName: campData?.campaign_name,
+    campaign: campaignId,
+    uuid: fund
+  },
+}); */
+
+  } catch (error) {
+    console.log(error.response);
+    toast.error(error.response?.data?.message)
+    
+  }
+    
+  }
   return (
     <div className='container mx-auto px-2 lg:px-4'>
       <div className="border-[0.5px] border-solid border-black px-[12px] lg:px-[35px] rounded-[20px] bg-card-border mb-8 mt-10 shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] grid grid-cols-1 lg:grid-cols-3">
@@ -197,14 +171,13 @@ const handleDonate = async () => {
           <p className='text-gray-800 font-poppins text-base mb-6'>Confirm the details and enter your billing information.</p>
           <div className='border-[0.5px] border-black bg-white rounded-[10px] pt-[10px] pb-[22px] mb-10'>
             <div className='pl-[22px] pr-8 border-b-[0.5px] border-black flex items-center gap-5'>
-              {/* <img src={creditCard} alt={creditCard} className='w-[42px] h-[42px]' /> */}
-              <div id="card-container" style={{ minHeight: "200px" }}></div>
+              <img src={creditCard} alt={creditCard} className='w-[42px] h-[42px]' />
               {/* <p className='text-gray-800 text-base font-poppins'>Card number</p> */}
-              {/* <MyInput forId="creditCardNumber" type="text" placeholder="Card number" value="xyz" inputStyle="!border-0 text-gray-800 text-base" /> */}
+              <MyInput forId="creditCardNumber" type="text" placeholder="Card number" value="xyz" inputStyle="!border-0 text-gray-800 text-base" />
             </div>
             <div className='flex items-center justify-between'>
-              {/* <MyInput forId="creditCardNumber" type="text" placeholder="MM/YY" value="xyz" inputStyle="!border-0 text-gray-800 text-base ml-2 lg:ml-0" /> */}
-              {/* <MyInput forId="creditCardNumber" type="text" placeholder="CVV" value="xyz" inputStyle="!border-0 text-gray-800 text-base" /> */}
+              <MyInput forId="creditCardNumber" type="text" placeholder="MM/YY" value="xyz" inputStyle="!border-0 text-gray-800 text-base ml-2 lg:ml-0" />
+              <MyInput forId="creditCardNumber" type="text" placeholder="CVV" value="xyz" inputStyle="!border-0 text-gray-800 text-base" />
             </div>
           </div>
           <div className='flex flex-col items-center gap-4'>
@@ -218,4 +191,4 @@ const handleDonate = async () => {
   )
 }
 
-export default ViewCampaign;
+export default ViewCampaign

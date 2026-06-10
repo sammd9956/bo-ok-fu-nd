@@ -14,7 +14,6 @@ const forgotPasswordService = async (email) => {
     }
 
     const user = rows[0];
-console.log("User Found:", user.email);
     const token = crypto.randomBytes(32).toString("hex");
 
 
@@ -31,9 +30,6 @@ console.log("User Found:", user.email);
         html: resetPasswordTemplate(resetLink)
     });
 
-    /* const [remainingTime] = await pool.query(`SELECT  expires_at FROM tbl_password_reset_tokens WHERE token_hash = ?`, [token]);
-    const tokenExp = remainingTime[0].expires_at - Date.now();
-    return {email: user.email, expiresAt, remainingTime: remainingTime[0].remaining_seconds}; */
     const [timeRows] = await pool.query( `SELECT expires_at FROM tbl_password_reset_tokens WHERE token_hash = ?`, [token] );
 
 const expiresTime = new Date(timeRows[0].expires_at);
@@ -47,7 +43,7 @@ return { email: user.email, expiresAt, remainingTime };
 
 const rsetPasswordService = async (token, password) => {
     try {
-        const [rows] = await pool.query(`SELECT * FROM tbl_password_reset_tokens WHERE token_hash = ? AND token_type = 'PASSWORD_RESET' AND used_at IS NULL AND expires_at > NOW()`, [token]);
+        const [rows] = await pool.query(`SELECT * FROM tbl_password_reset_tokens WHERE token_hash = ? AND token_type = 'PASSWORD_RESET' AND used_at IS NULL AND expires_at > ?`, [token, new Date()]);
         if(rows.length === 0){
         throw new Error("Invalid or expired token");
     }

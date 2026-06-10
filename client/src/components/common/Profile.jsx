@@ -1,3 +1,4 @@
+import Logout from '@/pages/Logout'
 import { UserPen, UserRoundCog } from 'lucide-react'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -33,6 +34,7 @@ const Profile = () => {
                         <UserRoundCog color="#FFF" size={30} />
                     </span>
                 </div>
+                <Logout />
             </div>
 
             {/* Smooth Animated Dropdown */}
