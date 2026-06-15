@@ -142,6 +142,7 @@ export default function DashboardDonationTable({setTotalRaised, setTotalDonors, 
     useEffect(() => {
 
   const fetchDonation = async () => {
+    if(!selectedCampaign?.campaign_id) return;
     try {
       
       const res = await axios.get( `${server}/api/v1/don/get-donation/${selectedCampaign?.campaign_id}`, { withCredentials: true } );

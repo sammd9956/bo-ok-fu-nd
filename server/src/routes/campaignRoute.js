@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewCompaign, getCampaign, getCampaignByCampaignId, getCampaignByFundCode, getCampByFundCode, updateCmpaignBycampaignId } from '../controllers/campaignController.js';
+import { campaignExpired, createNewCompaign, getCampaign, getCampaignByCampaignId, getCampaignByFundCode, getCampByFundCode, updateCmpaignBycampaignId } from '../controllers/campaignController.js';
 import { isAuthenticated } from '../../middleware/auth.js';
 const router = express.Router();
 
@@ -11,6 +11,7 @@ router.get("/get-campaign/:fundcode", getCampByFundCode);
 router.get("/fetch-campaign/:fundCode", getCampaignByFundCode);
 router.get("/get-campaigns/:campaignid", getCampaignByCampaignId);
 router.put("/update-campaign", updateCmpaignBycampaignId);
+router.get("/check-campaign-expires/:campaignid", campaignExpired);
 
 
 export default router;

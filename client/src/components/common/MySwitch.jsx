@@ -1,22 +1,40 @@
-import React, { useState } from "react"
-import { Switch } from "../ui/switch"
+import React from "react";
+import { Switch } from "../ui/switch";
+import axios from "axios";
+import { server } from "@/constatnts/config";
 
-const MySwitch = ({setChecked,checked}) => {
+const MySwitch = ({ checked, setChecked, campId }) => {
+
+  const changeHandler = async (value) => {
+    
+    try {
+      const res = await axios.get(
+        `${server}/api/v1/camp/check-campaign-expires/${campId}`,
+        { withCredentials: true }
+      );
+      
+
+      
+      setChecked("completed");
+
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
 
   return (
-    <div className="flex items-center space-x-3">
+    <div className="flex items-center gap-3">
+
       <Switch
-        id="airplane-mode"
         checked={checked}
-        onCheckedChange={setChecked}
-        className="
+        onCheckedChange={changeHandler}
+        className={`
           peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent
           transition-colors
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-          disabled:cursor-not-allowed disabled:opacity-50
 
-          data-[state=checked]:bg-[#00B94A]
-          data-[state=unchecked]:bg-gray-300
+          ${checked === "active" ? "bg-green-500" : "bg-gray-400"}
+
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
 
           [&>span]:pointer-events-none
           [&>span]:block
@@ -27,15 +45,19 @@ const MySwitch = ({setChecked,checked}) => {
           [&>span]:shadow-lg
           [&>span]:transition-transform
 
-          data-[state=checked]:[&>span]:translate-x-3
+          data-[state=checked]:[&>span]:translate-x-5
           data-[state=unchecked]:[&>span]:translate-x-0
-        "
+        `}
       />
 
-      {/* Dynamic Text */}
-     
-    </div>
-  )
-}
+      <span className={`text-xs font-medium ${
+        checked ? "text-green-600" : "text-gray-500"
+      }`}>
+        {checked ? "Active" : "Completed"}
+      </span>
 
-export default MySwitch
+    </div>
+  );
+};
+
+export default MySwitch;

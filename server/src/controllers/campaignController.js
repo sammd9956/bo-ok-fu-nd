@@ -3,6 +3,7 @@ import { TryCatch } from "../../middleware/error.js";
 import { ErrorHandler } from "../../utils/utility.js";
 import {findCampaignByFundCode, getCampaignsByFundCodeService, getMyCampaignsService, getCampaignByCampainIdService, updateCmpaignBycampaignIdService} from "../models/campaignModel.js";
 import {v4 as uuidv4} from 'uuid';
+import { checkCampaignExpired } from "../services/campaigns/campaignValidation.js";
 
 const createNewCompaign = TryCatch(async (req, res, next) => {
     const {campName, campType, startDate, endDate, goalAmount, message} = req.body;
@@ -57,6 +58,24 @@ const updateCmpaignBycampaignId = TryCatch(async(req, res, next) => {
     res.status(200).json({success: true, message: "Campaign updated successfully"})
 })
 
+const campaignExpired = TryCatch(async (req, res) => {
+  const { campaignid } = req.params;
+
+  const campaign = await checkCampaignExpired(campaignid);
+
+  return res.status(200).json({
+    success: true,
+    campaign,
+  });
+});
 
 
-export { createNewCompaign, getCampaignByFundCode, getCampaign, getCampByFundCode, getCampaignByCampaignId, updateCmpaignBycampaignId}
+
+export { createNewCompaign,
+     getCampaignByFundCode,
+     getCampaign,
+     getCampByFundCode,
+     getCampaignByCampaignId,
+     updateCmpaignBycampaignId,
+     campaignExpired
+    }

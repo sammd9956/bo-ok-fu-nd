@@ -1,7 +1,8 @@
 import { TryCatch } from "../../middleware/error.js";
-import { sendEmail, sendMail } from "../../utils/sendEmail.js";
+import { sendMail } from "../../utils/sendEmail.js";
 import { ErrorHandler } from "../../utils/utility.js";
 import { getDonationBycampaignId, getDonationById, makeDonation, makeDonationService } from "../models/donationModel.js";
+import { getCampStatus } from "../services/campaigns/campaignValidation.js";
 import { getPaymentDetailService } from "../services/paymentService.js";
 
 const createDonation = TryCatch(async (req, res, next) => {
@@ -41,8 +42,9 @@ const getDonation = TryCatch(async (req, res, next) => {
     // const fundId = req.user.id;
     const {campaignid} = req.params;
     
-
     const result = await getDonationBycampaignId(campaignid);
+    const campStatus = await getCampStatus(campaignid);
+
     const totalRaised = result.reduce((acc, item) => {
     return acc + Number(item.amount);
     }, 0);
@@ -54,7 +56,8 @@ const getDonation = TryCatch(async (req, res, next) => {
         success: true,
         donation: result,
         totalRaised,
-        totalDonors
+        totalDonors,
+        campStatus
     });
 });
 
@@ -97,4 +100,4 @@ const getPaymentDetails = TryCatch(async(req, res, next) => {
 })
 
 
-export { createDonation, getDonation, findDonationById, sendThankYouMail, makeDonations, getPaymentDetails };
+export { createDonation, findDonationById, getDonation, getPaymentDetails, makeDonations, sendThankYouMail };

@@ -11,6 +11,7 @@ import campaignRoute from './routes/campaignRoute.js';
 import authRoute from './routes/authRoute.js';
 import paymentRoute from './routes/paymentRoutes.js';
 import squarePaymentRoute from './routes/squarePaymentRoute.js';
+import redeemRoute from './routes/redeemRoute.js';
 import { errorMiddleware } from '../middleware/error.js';
 import cors from 'cors';
 import { corsOptions } from '../constants/config.js';
@@ -30,6 +31,7 @@ app.use("/api/v1/camp", campaignRoute)
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/raz", paymentRoute);
 app.use("/api/v1/sqr", squarePaymentRoute);
+app.use("/api/v1/red", redeemRoute);
 
 app.get("/getkey", async(req, res) => res.json({key: process.env.RAZORPAY_API_KEY}))
 

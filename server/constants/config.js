@@ -10,4 +10,11 @@ const corsOptions = {
 
 const BOOK_FUND_TOKEN = "book_fund_token";
 
-export { corsOptions, BOOK_FUND_TOKEN };
+const generateGiftCard = () => {
+  return "EGF-" + Date.now() + "-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+}
+
+export { corsOptions,
+   BOOK_FUND_TOKEN,
+   generateGiftCard
+   };

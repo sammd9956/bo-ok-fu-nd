@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import client from "../../config/square.js";
 import { pool } from "../../config/db.js";
+import { isCampaignActive } from "../shared/helper.js";
 
 export const processSquarePayment = async (req, res) => {
     console.log("wewwe", req.body);
@@ -21,8 +22,13 @@ export const processSquarePayment = async (req, res) => {
         message: "Payment token missing",
       });
     }
+    const isActive = await isCampaignActive(campaignId);
+    console.log("isaxtiiii", isActive);
+    
 
-    const [donationResult] = await pool.query(
+  if(!isActive) return res.status(500).json({success: false, message: "Expired Campaign"})
+  
+  const [donationResult] = await pool.query(
   `INSERT INTO tbl_donations 
   (campaign_id, donor_name, donor_email, amount, message, donated_at)
   VALUES (?, ?, ?, ?, ?, NOW())`,

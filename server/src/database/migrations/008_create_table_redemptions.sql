@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS tbl_redemptions (
+  redemption_id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  campaign_id INT NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  status ENUM('PENDING','COMPLETED','FAILED') DEFAULT 'PENDING',
+  gift_card_code VARCHAR(255),
+  idempotency_key VARCHAR(100) UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;

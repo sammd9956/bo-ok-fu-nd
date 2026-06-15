@@ -23,12 +23,15 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import MyButton from '../../components/common/MyButton'
 import MySwitch from '../../components/common/MySwitch'
+import toast from "react-hot-toast"
 
 
 const CardSection = ({totalRaised, totalDonors, campaigns=[], selectedCampaign}) => {
+   
+    
     const [donations, setDonations] = useState([]);
     const [sortedData, setSortedData] = useState()
-    const [checked, setChecked] = useState(false)
+    const [checked, setChecked] = useState("active")
     const [openDialog, setOpenDialog] = useState(false);
     const [sortOrder, setSortOrder] = useState("asc");
     const navigate = useNavigate();
@@ -53,20 +56,20 @@ const CardSection = ({totalRaised, totalDonors, campaigns=[], selectedCampaign})
     useEffect(() => {
 
       const fetchData = async() => {
+        if(!selectedCampaign?.campaign_id) return;
   try {
             const res = await axios.get( `${server}/api/v1/don/get-donation/${selectedCampaign?.campaign_id}`, { withCredentials: true } );
-
             setSortedData(res.data.donation);
           
             
         } catch (error) {
-            console.log(error.response.data);
+            console.log(error.response);
             
         }
       }
       fetchData()
      
-    }, []);
+    }, [selectedCampaign]);
     const fetchDonation = async () => {
        
         const res = await axios.get( `${server}/api/v1/don/get-donation/${selectedCampaign?.campaign_id}`, { withCredentials: true } );
@@ -92,7 +95,22 @@ const currentDescription = isWholeSchool
     // const percentage = user?.goal > 0 ? (totalRaised / user.goal) * 100 : 0;
     const percentage = currentGoal > 0 ? (totalRaised / currentGoal) * 100 : 0;
       
-      
+      const handleRedeem = async () => {
+       try {
+        const idempotencyKey = crypto.randomUUID();
+
+        const res = await axios.post( `${server}/api/v1/red/create-redemption`, { amount: totalRaised, campaignId: selectedCampaign?.campaign_id }, { withCredentials: true, headers: { "idempotency-key": idempotencyKey } } );
+        if (res.data.success) {
+  navigate(`/e-gift-card/${res.data.redemptionId}`);
+}
+        
+        // checked ? navigate('/e-gift-card') : ""
+       } catch (error) {
+        console.log(error.response);
+        toast(error.response.data.message)
+        
+       }
+      }
     
     return (
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-[26px]'>
@@ -116,22 +134,22 @@ const currentDescription = isWholeSchool
                 <div className='flex items-start justify-between mb-[9px]'>
                     <p className='text-xl font-poppins font-medium text-black'>Status</p>
                     <div className='flex flex-col gap-[7px] items-end justify-end'>
-                        <MySwitch setChecked={setChecked} checked={checked} />
-                        <span className={`text-xs font-medium ${checked ? 'text-red-500' : 'text-gray-300'}`}>
-                            {checked ? "Activate" : "Non-Activate"}
+                        <MySwitch setChecked={setChecked} checked={checked} campId={selectedCampaign?.campaign_id} />
+                        <span className={`text-xs font-medium ${checked === "active" ? 'text-yellow-500' : 'text-gray-500'}`}>
+                            {checked === "active" ? "Activate" : "Completed"}
                         </span>
                     </div>
                 </div>
                 <div className='flex items-center justify-between mb-[22px]'>
                     <p className='text-xl font-poppins font-medium text-black'>Current Balance</p>
-                    <p className='text-xl font-poppins font-extrabold text-bright-green'>$000.00</p>
+                    <p className='text-xl font-poppins font-extrabold text-bright-green'>${totalRaised.toFixed(2)}</p>
                 </div>
 
                 {/* <p onClick={() => setOpenDialog(true)} className='text-[15px] font-poppins text-electric-blue underline hover:cursor-pointer mb-[17px]'>Click to view transaction history</p> */}
 
                 <p onClick={() => fetchDonation()} className='text-[15px] font-poppins text-electric-blue underline hover:cursor-pointer mb-[17px]'>Click to view transaction history</p>
 
-                <MyButton variant="outline" text="Click Here to Redeem Funds" style="w-full" onClick={() => navigate('/e-gift-card')} />
+                <MyButton variant="outline" text="Click Here to Redeem Funds" style="w-full" onClick={handleRedeem} disabled={checked} />
             </div>
 
             <Dialog open={openDialog} onOpenChange={setOpenDialog}>

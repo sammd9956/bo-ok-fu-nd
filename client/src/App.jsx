@@ -44,7 +44,7 @@ function App() {
     }
   })
   .catch((err) => {
-    console.log("GET ME FAIL:", err.message);
+    console.log("GET ME FAIL:", err);
     dispatch(userNotExist())
   });
 
@@ -67,7 +67,7 @@ function App() {
            <Route path="/edit-campaign/:campaignid?" element={<EditCampaign />} />
           <Route path="/create-new-campaign" element={<EditCampaign />} />
           <Route path="/edit-profile" element={<EditProfile />} />
-          <Route path="/e-gift-card" element={<EGiftCard />} />
+          <Route path="/e-gift-card/:redemptionId" element={<EGiftCard />} />
           <Route path="/campaign/view-campaign" element={<ViewCampaign />} />
           <Route path="/thank-you" element={<ThankForDonating />} />
           <Route path="*" element={<NotFound />} />

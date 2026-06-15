@@ -5,10 +5,15 @@ import { Gift } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import MyButton from '@/components/common/MyButton';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+import { server } from '@/constatnts/config';
 
 const EGiftCard = () => {
       const [redeemCode, setRedeemCode] = useState("");
+      const params = useParams();
+      console.log("params", params);
+      
       const navigate = useNavigate()
     
       // Generate new code every popup open
@@ -30,12 +35,34 @@ const EGiftCard = () => {
           );
         }
     
-        setRedeemCode(`FUND-${random}`);
+        // setRedeemCode(`FUND-${random}`);
       };
     
       const handlePrint = () => {
         window.print();
       };
+
+
+      useEffect(() => {
+        console.log("chal gya");
+        
+  const fetchData = async () => {
+    try {
+      const res = await axios.get( `${server}/api/v1/red/get-redeem-data/${params.redemptionId}`, { withCredentials: true } );
+
+      setRedeemCode( res.data?.redeemData?.gift_card_code );
+
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  if (params.redemptionId) {
+    fetchData();
+  }
+
+}, [params.redemptionId]);
+      
     
   return (
    <div className='container mx-auto px-2 lg:px-4 my-6'>
@@ -84,7 +111,7 @@ const EGiftCard = () => {
 
           {/* Buttons */}
           <div className="flex flex-col gap-4 lg:flex-row items-center justify-center w-full lg:w-fit">
-            <MyButton variant='primary' text='Print Code' style='w-full flex-1'/>
+            <MyButton variant='primary' text='Print Code' style='w-full flex-1' onClick={() => handlePrint} />
             <MyButton variant='secondary' text='Back to Dashboard' onClick={()=>navigate("/dashboard")} style='w-full flex-1'/>
           </div>
         </div>
@@ -92,4 +119,4 @@ const EGiftCard = () => {
   )
 }
 
-export default EGiftCard
+export default EGiftCard;
