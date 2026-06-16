@@ -44,8 +44,6 @@ const getMe = TryCatch(async(req, res, next) => {
 })
 
 const updateProfile = TryCatch(async(req, res, next) => {
-    console.log("userreq",req.user);
-    console.log("userbody",req.body);
     const {email} = req.user;
     const {fullName, password} = req.body;
     if(!fullName || !password){

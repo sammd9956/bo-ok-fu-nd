@@ -12,9 +12,6 @@ const startFundService = async (reqBody) => {
     await connection.beginTransaction();
 
     const { role, schoolName, fundName, startDate, endDate, teacherName, teacherEmail, password, goal, message } = reqBody;
-    if(startDate < new Date.now()){
-        return next(new ErrorHandler("Please select valid start date", 400))
-    }
 
     const hashedPass = await bcrypt.hash(password, 10);
     const fundCode = uuidv4();
