@@ -26,14 +26,15 @@ import MySwitch from '../../components/common/MySwitch'
 import toast from "react-hot-toast"
 
 
-const CardSection = ({totalRaised, totalDonors, campaigns=[], selectedCampaign}) => {
-   
-    
+const CardSection = ({ totalRaised, totalDonors, campaigns = [], selectedCampaign }) => {
+
+
     const [donations, setDonations] = useState([]);
     const [sortedData, setSortedData] = useState()
-    const [checked, setChecked] = useState("active")
+    const [checked, setChecked] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const [sortOrder, setSortOrder] = useState("asc");
+    const [campStatus, setampStatus] = useState("")
     const navigate = useNavigate();
     const user = useSelector((state) => state.auth.user);
 
@@ -55,63 +56,73 @@ const CardSection = ({totalRaised, totalDonors, campaigns=[], selectedCampaign})
 
     useEffect(() => {
 
-      const fetchData = async() => {
-        if(!selectedCampaign?.campaign_id) return;
-  try {
-            const res = await axios.get( `${server}/api/v1/don/get-donation/${selectedCampaign?.campaign_id}`, { withCredentials: true } );
-            setSortedData(res.data.donation);
-          
-            
-        } catch (error) {
-            console.log(error.response);
-            
+        const fetchData = async () => {
+            if (!selectedCampaign?.campaign_id) return;
+            try {
+                const res = await axios.get(`${server}/api/v1/don/get-donation/${selectedCampaign?.campaign_id}`, { withCredentials: true });
+                setSortedData(res.data.donation);
+                setampStatus(res.data?.campStatus);
+
+
+            } catch (error) {
+                console.log(error.response);
+
+            }
         }
-      }
-      fetchData()
-     
+        fetchData()
+
     }, [selectedCampaign]);
     const fetchDonation = async () => {
-       
-        const res = await axios.get( `${server}/api/v1/don/get-donation/${selectedCampaign?.campaign_id}`, { withCredentials: true } );
-         
-          setSortedData(res.data?.donation);
-            setOpenDialog(true)
+
+        const res = await axios.get(`${server}/api/v1/don/get-donation/${selectedCampaign?.campaign_id}`, { withCredentials: true });
+
+        setSortedData(res.data?.donation);
+        setOpenDialog(true)
     }
     const isWholeSchool = user?.role === "school";
 
-/* const currentGoal = isWholeSchool
-    ? selectedCampaign?.goal_amount
-    : user?.goal; */
+    /* const currentGoal = isWholeSchool
+        ? selectedCampaign?.goal_amount
+        : user?.goal; */
     const currentGoal = selectedCampaign?.goal_amount;
 
-const currentTitle = isWholeSchool
-    ? selectedCampaign?.campaign_name
-    : user?.fund_name;
+    const currentTitle = isWholeSchool
+        ? selectedCampaign?.campaign_name
+        : user?.fund_name;
 
-const currentDescription = isWholeSchool
-    ? selectedCampaign?.description
-    : user?.message;
-    
+    const currentDescription = isWholeSchool
+        ? selectedCampaign?.description
+        : user?.message;
+
     // const percentage = user?.goal > 0 ? (totalRaised / user.goal) * 100 : 0;
     const percentage = currentGoal > 0 ? (totalRaised / currentGoal) * 100 : 0;
-      
-      const handleRedeem = async () => {
-       try {
-        const idempotencyKey = crypto.randomUUID();
 
-        const res = await axios.post( `${server}/api/v1/red/create-redemption`, { amount: totalRaised, campaignId: selectedCampaign?.campaign_id }, { withCredentials: true, headers: { "idempotency-key": idempotencyKey } } );
-        if (res.data.success) {
-  navigate(`/e-gift-card/${res.data.redemptionId}`);
-}
-        
-        // checked ? navigate('/e-gift-card') : ""
-       } catch (error) {
-        console.log(error.response);
-        toast(error.response.data.message)
-        
-       }
-      }
-    
+    const handleRedeem = async () => {
+        try {
+            const idempotencyKey = crypto.randomUUID();
+
+            const res = await axios.post(`${server}/api/v1/red/create-redemption`, { amount: totalRaised, campaignId: selectedCampaign?.campaign_id }, { withCredentials: true, headers: { "idempotency-key": idempotencyKey } });
+            if (res.data.success) {
+                navigate(`/e-gift-card/${res.data.redemptionId}`);
+            }
+
+            // checked ? navigate('/e-gift-card') : ""
+        } catch (error) {
+            console.log(error.response);
+            toast(error.response.data.message)
+
+        }
+    }
+    console.log("chxxxx", checked);
+
+    useEffect(() => {
+        if (campStatus === "completed") {
+            setChecked(true);
+        } else {
+            setChecked(false);
+        }
+    }, [campStatus]);
+
     return (
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-[26px]'>
             <div className='bg-outline-border rounded-[20px] pt-9 pl-[38px] pr-[42px] pb-[54px] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]'>
@@ -134,9 +145,10 @@ const currentDescription = isWholeSchool
                 <div className='flex items-start justify-between mb-[9px]'>
                     <p className='text-xl font-poppins font-medium text-black'>Status</p>
                     <div className='flex flex-col gap-[7px] items-end justify-end'>
-                        <MySwitch setChecked={setChecked} checked={checked} campId={selectedCampaign?.campaign_id} />
-                        <span className={`text-xs font-medium ${checked === "active" ? 'text-yellow-500' : 'text-gray-500'}`}>
-                            {checked === "active" ? "Activate" : "Completed"}
+                        <MySwitch setChecked={setChecked} checked={checked} campId={selectedCampaign?.campaign_id} campStatus={campStatus} />
+                        <span className={`text-xs font-medium ${checked ? "text-green-600" : "text-yellow-500"
+                            }`}>
+                            {checked ? "Completed" : "Active"}
                         </span>
                     </div>
                 </div>
@@ -149,7 +161,7 @@ const currentDescription = isWholeSchool
 
                 <p onClick={() => fetchDonation()} className='text-[15px] font-poppins text-electric-blue underline hover:cursor-pointer mb-[17px]'>Click to view transaction history</p>
 
-                <MyButton variant="outline" text="Click Here to Redeem Funds" style="w-full" onClick={handleRedeem} disabled={checked} />
+                <MyButton variant="outline" text="Click Here to Redeem Funds" style="w-full" onClick={checked ? handleRedeem : undefined} disabled={checked} />
             </div>
 
             <Dialog open={openDialog} onOpenChange={setOpenDialog}>
@@ -210,14 +222,14 @@ const currentDescription = isWholeSchool
                                                             {format(new Date(item?.donated_at), "dd-MMM-yyyy")}
                                                         </p>
                                                     </div>
-                                                  
+
                                                 </TableCell>
                                                 <TableCell className="text-black text-[15px] font-poppins font-bold">
                                                     {item?.message}
                                                 </TableCell>
                                                 <TableCell className="text-black text-[15px] font-poppins font-bold">
                                                     {item?.transaction_type.charAt(0).toUpperCase() + item?.transaction_type.slice(1)}
-                                                  
+
                                                 </TableCell>
                                                 <TableCell className="text-bright-green text-[15px] font-poppins font-bold">
                                                     +${item?.amount}

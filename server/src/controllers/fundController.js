@@ -9,6 +9,7 @@ import { sendToken } from "../../utils/feature.js";
 
 
 const createFunds = TryCatch(async (req, res, next) => {
+    
       const result = await startFundService(req.body);
         res.status(201).json({ message: 'Fund created successfully', data: result });
     

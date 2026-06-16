@@ -22,7 +22,7 @@ const MyButton = ({
       onClick={onClick}
       
       className={`
-  ${disabled === "active" ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+  ${disabled === false ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
   text-base px-6 py-4 rounded-md font-semibold font-inter
   min-w-[140px] transition-all duration-200 ease-in-out h-auto
   ${variantStyles[variant] || variantStyles.primary}

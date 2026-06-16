@@ -1,6 +1,7 @@
 import { pool } from '../../config/db.js';
 import bcrypt from 'bcrypt';
 import {v4 as uuidv4} from 'uuid'
+import { ErrorHandler } from '../../utils/utility.js';
 
 
 
@@ -11,16 +12,19 @@ const startFundService = async (reqBody) => {
     await connection.beginTransaction();
 
     const { role, schoolName, fundName, startDate, endDate, teacherName, teacherEmail, password, goal, message } = reqBody;
+    if(startDate < new Date.now()){
+        return next(new ErrorHandler("Please select valid start date", 400))
+    }
 
     const hashedPass = await bcrypt.hash(password, 10);
     const fundCode = uuidv4();
-    // 1. Insert user
+    // Insert user
     const [userResult] = await connection.query( "INSERT INTO tbl_users (school_name, full_name, email, password, role) VALUES (?,?,?,?,?)", [schoolName, teacherName, teacherEmail, hashedPass, role] );
 
     const userId = userResult.insertId;
     
 
-    // 2. Insert campaign
+    //Insert campaign
     const [campaignResult] = await connection.query( `INSERT INTO tbl_campaigns (user_id, campaign_name, campaign_type, goal_amount, message, start_date, end_date,fund_code) VALUES (?,?,?,?,?,?,?,?)`, [userId, fundName, role, goal, message, startDate, endDate, fundCode] );
 
     await connection.commit();
@@ -44,8 +48,6 @@ const findByIdAndUpdate = async(id) => {
 };
 
 const findFundByEmail = async (teacherEmail) => {
-
-console.log("SELECT fund_id, fund_type, school_name, fund_name, start_date, end_date, teacher_name, teacher_email, password, goal, message, fund_code FROM tbl_funds WHERE teacher_email", teacherEmail);
 
     const [result] = await pool.query(
         "SELECT fund_id, fund_type, school_name, fund_name, start_date, end_date, teacher_name, teacher_email, password, goal, message, fund_code FROM tbl_funds WHERE teacher_email = ?",

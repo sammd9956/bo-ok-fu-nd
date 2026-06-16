@@ -69,13 +69,42 @@ const campaignExpired = TryCatch(async (req, res) => {
   });
 });
 
+const updateCampaignStatus = TryCatch(async (req, res, next) => {
+    const { campaignId } = req.body;
+
+    const [rows] = await pool.query( "SELECT start_date, end_date, status FROM tbl_campaigns WHERE campaign_id = ?", [campaignId] );
+
+    if (!rows.length) {
+        return next(new ErrorHandler("Campaign not found", 404));
+    }
+
+    const campaign = rows[0];
+
+    if (
+        new Date() >= new Date(campaign.start_date) &&
+        new Date() <= new Date(campaign.end_date)
+    ) {
+        return next(new ErrorHandler("Can't switch before campaign end date", 400));
+    }
+
+    if (campaign.status === "completed") {
+        return next(new ErrorHandler("Already completed", 400));
+    }
+
+    await pool.query( "UPDATE tbl_campaigns SET status = 'completed' WHERE campaign_id = ?", [campaignId] );
+
+    res.status(200).json({ success: true, message: "Campaign marked as completed" });
+});
 
 
-export { createNewCompaign,
-     getCampaignByFundCode,
-     getCampaign,
-     getCampByFundCode,
-     getCampaignByCampaignId,
-     updateCmpaignBycampaignId,
-     campaignExpired
+
+export { 
+    createNewCompaign,
+    getCampaignByFundCode,
+    getCampaign,
+    getCampByFundCode,
+    getCampaignByCampaignId,
+    updateCmpaignBycampaignId,
+    campaignExpired,
+    updateCampaignStatus
     }
