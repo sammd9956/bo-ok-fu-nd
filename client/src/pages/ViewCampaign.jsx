@@ -107,10 +107,9 @@ const handleDonate = async () => {
       toast.error("Card validation failed");
       return;
     }
-    console.log("111111111");
+    
     
     const sourceId = result?.token;
-    console.log("11122222111111");
     const payload = {
       campaignId,
       // fundId: campData.fund_id,
@@ -121,7 +120,6 @@ const handleDonate = async () => {
       sourceId
       
     };
-    console.log("3333333");
     const { data } = await axios.post( `${server}/api/v1/sqr/pay`, payload, { withCredentials: true } );
     toast.success("Donation successful");
 
@@ -138,6 +136,9 @@ const handleDonate = async () => {
     );
   }
 };
+
+  const progress = Number(campData?.total_raised / campData?.goal_amount) * 100;
+  // console.log(progress);
   
   return (
     <div className='container mx-auto px-2 lg:px-4'>
@@ -148,11 +149,12 @@ const handleDonate = async () => {
           <p className='font-poppins text-2xl text-black font-bold mb-[22px]'>Campaign Date: <span className='font-normal'>{new Date(campData?.start_date).toDateString()} to {new Date(campData?.end_date).toDateString()}</span></p>
           <div className='bg-soft-gray rounded-[20px] pt-[17px] pl-[22px] pr-6 pb-[19px] mb-6'>
             <div className='flex items-center justify-between mb-1.5'>
-              <p className='text-purple-purple-500 font-poppins text-[15px] font-semibold'> $300 raised</p>
-              <p className='text-slate-gray font-poppins text-[15px] font-semibold'>of $500 goal</p>
+              {/* <p className='text-purple-purple-500 font-poppins text-[15px] font-semibold'> $300 raised</p> */}
+              <p className='text-purple-purple-500 font-poppins text-[15px] font-semibold'> ${campData?.total_raised} raised</p>
+              <p className='text-slate-gray font-poppins text-[15px] font-semibold'>of ${campData?.goal_amount} goal</p>
             </div>
             <Progress
-              value={70}
+              value={progress}
               className="bg-cloud-gray h-2 rounded-full overflow-hidden [&>div]:bg-outline-border mb-[13px]"
             />
             <p className='text-gray-800 font-poppins text-[15px] font-medium'>❤️ 17 incredible people have donated</p>

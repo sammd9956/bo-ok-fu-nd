@@ -49,6 +49,8 @@ const Dashboard = () => {
 
 }, [user]);
 
+console.log("campaignsssss", campaigns);
+
   return (
     <>
       <div className="w-full">

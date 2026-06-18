@@ -1,12 +1,13 @@
 import MyButton from '@/components/common/MyButton'
 import MyInput from '@/components/common/MyInput'
 import Profile from '@/components/common/Profile'
+import Toaster from '@/components/common/Toaster'
 import { server } from '@/constatnts/config'
 import useWhoFundValue from '@/store/useWhoFundValue'
 import axios from 'axios'
 import { ArrowBigLeft } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -56,8 +57,9 @@ const EditProfile = () => {
             password: password,
         }
         const res = await axios.put(`${server}/api/v1/user/update-profile`, payload, {withCredentials: true});
+        console.log(res.data);
         
-        toast.success(res.data.message);
+        toast(<Toaster message={res.data.message} />);
         navigate("/dashboard");
         window.location.reload();
         
@@ -73,6 +75,7 @@ const EditProfile = () => {
         <div className=' mb-8 w-full'>
             <Profile />
             <div className='flex flex-col gap-[76px] container mx-auto px-2 lg:px-4'>
+               
                 <p
                     onClick={() => navigate("/dashboard")}
                     className="group flex items-center gap-2 cursor-pointer w-fit font-poppins font-semibold text-[13px] transition-all duration-300 ease-in-out active:translate-y-0.5 relative z-50"

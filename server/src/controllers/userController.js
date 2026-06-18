@@ -51,7 +51,7 @@ const updateProfile = TryCatch(async(req, res, next) => {
     }
     const hashedPass = await bcrypt.hash(password, 10);
     const result = await updateProfileServic(fullName, email, hashedPass);
-    return res.status(200).json({success: true})
+    return res.status(200).json({success: true, message: "Profile updated successfully"})
 })
 
 

@@ -113,7 +113,6 @@ const CardSection = ({ totalRaised, totalDonors, campaigns = [], selectedCampaig
 
         }
     }
-    console.log("chxxxx", checked);
 
     useEffect(() => {
         if (campStatus === "completed") {
@@ -128,7 +127,7 @@ const CardSection = ({ totalRaised, totalDonors, campaigns = [], selectedCampaig
             <div className='bg-outline-border rounded-[20px] pt-9 pl-[38px] pr-[42px] pb-[54px] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]'>
                 <p className='text-xl font-poppins font-medium mb-[13px] text-white'>$ Total Raised</p>
                 <p className='text-[50px] font-poppins font-bold mb-[22px] text-white'>${totalRaised}</p>
-                <p className='text-[15px] font-poppins font-light mb-[11px] text-white'>{percentage.toFixed(2)}% of ${currentGoal || 0} GOAL</p>
+                <p className='text-[15px] font-poppins font-light mb-[11px] text-white'>{percentage.toFixed(1)}% of ${currentGoal || 0} GOAL</p>
                 <Progress
                     value={percentage}
                     className="bg-soft-lavender h-2 rounded-full overflow-hidden [&>div]:bg-white"
@@ -148,7 +147,7 @@ const CardSection = ({ totalRaised, totalDonors, campaigns = [], selectedCampaig
                         <MySwitch setChecked={setChecked} checked={checked} campId={selectedCampaign?.campaign_id} campStatus={campStatus} />
                         <span className={`text-xs font-medium ${checked ? "text-green-600" : "text-yellow-500"
                             }`}>
-                            {checked ? "Completed" : "Active"}
+                            {/* {checked ? "Completed" : "Active"} */}
                         </span>
                     </div>
                 </div>
@@ -161,7 +160,7 @@ const CardSection = ({ totalRaised, totalDonors, campaigns = [], selectedCampaig
 
                 <p onClick={() => fetchDonation()} className='text-[15px] font-poppins text-electric-blue underline hover:cursor-pointer mb-[17px]'>Click to view transaction history</p>
 
-                <MyButton variant="outline" text="Click Here to Redeem Funds" style="w-full" onClick={checked ? handleRedeem : undefined} disabled={checked} />
+                <MyButton variant="outline" text="Click Here to Redeem Funds" style="w-full" onClick={handleRedeem} disabled={checked} />
             </div>
 
             <Dialog open={openDialog} onOpenChange={setOpenDialog}>

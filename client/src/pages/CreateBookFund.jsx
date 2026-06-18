@@ -5,6 +5,7 @@ import MyInput from '@/components/common/MyInput'
 import MyRadioButton from '@/components/common/MyRadioButton'
 import MySelect from '@/components/common/MySelect'
 import MyTextArea from '@/components/common/MyTextArea'
+import Toaster from '@/components/common/Toaster'
 import useWhoFundValue from '@/store/useWhoFundValue'
 import { formatMySQLDate } from '@/utils/feature'
 import axios from 'axios'
@@ -76,8 +77,7 @@ const CreateBookFund = () => {
      
         try {
             const res = await axios.post("http://localhost:3000/api/v1/fund/create-fund", creatFundPayload, {withCredentials: true});
-            alert("launched");
-            console.log(res.data)
+            toast(<Toaster message={res.data?.message} />)
             if(res.data.data.success){
                 navigate(`/`)
             }

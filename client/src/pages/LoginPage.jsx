@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 import { server } from '@/constatnts/config'
 import { useDispatch } from 'react-redux'
 import { userExist } from '@/redux/slices/authSlices'
+import Toaster from '@/components/common/Toaster'
 
 const LoginPage = () => {
     const [Email, setEmail] = useState("");
@@ -25,11 +26,12 @@ const LoginPage = () => {
         }
       }
        try {
-         const data = await axios.post(`${server}/api/v1/user/sign-in`, {email: Email, password: Password}, config)
+         const res = await axios.post(`${server}/api/v1/user/sign-in`, {email: Email, password: Password}, config)
          
+         console.log(res.data.message);
          
-        dispatch(userExist(data.data.user))
-        // toast.success(data.message)
+        dispatch(userExist(res.data.user))
+        toast(<Toaster message={res.data.message} />)
          navigate("/dashboard");        
                
        } catch (error) {

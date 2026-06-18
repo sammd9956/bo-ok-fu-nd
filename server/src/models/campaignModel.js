@@ -18,7 +18,8 @@ const getMyCampaignsService = async (userId) => {
 const getCampaignsByFundCodeService = async (fundcode) => {
 
    try {
-     const [campaigns] = await pool.query( `SELECT c.campaign_id, c.fund_code, c.campaign_name, c.goal_amount, c.message, c.start_date, c.end_date, u.full_name, u.email, u.role FROM tbl_campaigns c INNER JOIN tbl_users u ON c.user_id = u.user_id WHERE c.fund_code = ?`,[fundcode] );
+     /* const [campaigns] = await pool.query( `SELECT c.campaign_id, c.fund_code, c.campaign_name, c.goal_amount, c.message, c.start_date, c.end_date, u.full_name, u.email, u.role FROM tbl_campaigns c INNER JOIN tbl_users u ON c.user_id = u.user_id WHERE c.fund_code = ?`,[fundcode] ); */
+     const [campaigns] = await pool.query( `SELECT c.campaign_id, c.fund_code, c.campaign_name, c.goal_amount, c.message, c.start_date, c.end_date, u.full_name, u.email, u.role, SUM(d.amount) AS total_raised FROM tbl_campaigns c INNER JOIN tbl_users u ON c.user_id = u.user_id LEFT JOIN tbl_donations d ON c.campaign_id = d.campaign_id WHERE c.fund_code = ?`,[fundcode] );
 
     return campaigns[0];
    } catch (error) {
@@ -50,6 +51,5 @@ const updateCmpaignBycampaignIdService = async (id, campName, startDate, endDate
     
    }
 }
-
 
 export { findCampaignByFundCode, getMyCampaignsService, getCampaignsByFundCodeService, getCampaignByCampainIdService, updateCmpaignBycampaignIdService };

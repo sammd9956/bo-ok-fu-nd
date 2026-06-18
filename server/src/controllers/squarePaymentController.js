@@ -4,7 +4,6 @@ import { pool } from "../../config/db.js";
 import { isCampaignActive } from "../shared/helper.js";
 
 export const processSquarePayment = async (req, res) => {
-    console.log("wewwe", req.body);
     
   try {
     const {      
@@ -23,10 +22,9 @@ export const processSquarePayment = async (req, res) => {
       });
     }
     const isActive = await isCampaignActive(campaignId);
-    console.log("isaxtiiii", isActive);
     
 
-  if(!isActive) return res.status(500).json({success: false, message: "Expired Campaign"})
+  // if(!isActive) return res.status(500).json({success: false, message: "Expired Campaign"})
   
   const [donationResult] = await pool.query(
   `INSERT INTO tbl_donations 

@@ -34,7 +34,7 @@ const Profile = () => {
                         <UserRoundCog color="#FFF" size={30} />
                     </span>
                 </div>
-                <Logout />
+                {/* <Logout /> */}
             </div>
 
             {/* Smooth Animated Dropdown */}

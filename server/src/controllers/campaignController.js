@@ -21,6 +21,8 @@ const createNewCompaign = TryCatch(async (req, res, next) => {
     //get campaign
     const getCampaign = TryCatch(async(req, res, next) => {
         const rows = await getMyCampaignsService(req.user.id)
+        console.log("11111111", rows);
+        
         res.status(200).json({success: true, message: "ok", campaigns: rows})
     })
 

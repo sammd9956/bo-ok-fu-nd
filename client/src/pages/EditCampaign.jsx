@@ -4,6 +4,7 @@ import MyInput from '@/components/common/MyInput'
 import MySelect from '@/components/common/MySelect'
 import MyTextArea from '@/components/common/MyTextArea'
 import Profile from '@/components/common/Profile'
+import Toaster from '@/components/common/Toaster'
 import { server } from '@/constatnts/config'
 import useWhoFundValue from '@/store/useWhoFundValue'
 import { formatMySQLDate } from '@/utils/feature'
@@ -86,7 +87,7 @@ const EditCampaign = () => {
                 }
                 
         const res = await axios.post("http://localhost:3000/api/v1/camp/new-campaign", campaignPayload, {withCredentials: true});     
-        toast.success(res.data.message);
+        toast(<Toaster message={res.data.message} />);
         navigate("/dashboard");
          } catch (error) {
             console.log(error.response);
@@ -145,7 +146,7 @@ const handleUpdate = async() => {
     // const res = await axios.post("http://localhost:3000/api/v1/camp/update-campaign", payload, {withCredentials: true});
     const res = await axios.put(`${server}/api/v1/camp/update-campaign`, payload, {withCredentials: true});
     
-    toast.success(res.data.message);
+    toast(<Toaster message={res.data.message} />);
     /* navigate("/dashboard")
      window.location.reload(); */
      navigate("/dashboard");

@@ -1,3 +1,4 @@
+import Toaster from '@/components/common/Toaster';
 import { server } from '@/constatnts/config';
 import axios from 'axios';
 import { useEffect, useRef, useState } from "react";
@@ -27,7 +28,7 @@ const ForgotPassword = () => {
   });
 
   socket.current.on("PASSWORD_RESET_SUCCESS", (data) => {
-    toast.success(data.message);
+    toast(<Toaster message={data.message} />);
     navigate("/log-in");
   });
 
