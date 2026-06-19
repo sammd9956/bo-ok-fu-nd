@@ -66,7 +66,7 @@ const EditCampaign = () => {
             const res = await axios.get(`${server}/api/v1/camp/get-campaigns/${params.campaignid}`, {withcredential: true});
             setCampaignDetails(res.data.campaign);
         } catch(error){
-            console.log(error)
+            console.log(error);
         }
     }
     getCampaignDetails();
@@ -90,7 +90,8 @@ const EditCampaign = () => {
         toast(<Toaster message={res.data.message} />);
         navigate("/dashboard");
          } catch (error) {
-            console.log(error.response);
+            // console.log(error.response);
+            toast.error(error.response?.data?.message);
             
          }
     }

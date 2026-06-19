@@ -14,8 +14,6 @@ const resetMeta = await forgotPasswordService(email);
 
 const resetPassword = TryCatch(async(req, res, next) => {
     const {email, token, newPassword, confirmPassword} = req.body;
-     console.log(req.body.payload);
-     console.log("token", token);
      if(!token || !newPassword || !confirmPassword){
         return next(new ErrorHandler("All feilds are required", 400))
      }

@@ -5,13 +5,18 @@ import { ErrorHandler } from '../../utils/utility.js';
 
 
 
-const startFundService = async (reqBody) => {
+const startFundService = async (reqBody, res) => {
+    console.log("aaaaaa", reqBody);
+    
   const connection = await pool.getConnection();
 
   try {
     await connection.beginTransaction();
 
     const { role, schoolName, fundName, startDate, endDate, teacherName, teacherEmail, password, goal, message } = reqBody;
+    if(!schoolName || !fundName || !startDate || !teacherName || !teacherEmail || !password) {
+        return res.status(400).json({success: false, message: "All fields are required"})
+    }
 
     const hashedPass = await bcrypt.hash(password, 10);
     const fundCode = uuidv4();

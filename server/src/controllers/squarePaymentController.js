@@ -26,12 +26,7 @@ export const processSquarePayment = async (req, res) => {
 
   // if(!isActive) return res.status(500).json({success: false, message: "Expired Campaign"})
   
-  const [donationResult] = await pool.query(
-  `INSERT INTO tbl_donations 
-  (campaign_id, donor_name, donor_email, amount, message, donated_at)
-  VALUES (?, ?, ?, ?, ?, NOW())`,
-  [campaignId, donorName, donorEmail, amount, notes]
-);
+  const [donationResult] = await pool.query( `INSERT INTO tbl_donations (campaign_id, donor_name, donor_email, amount, message, donated_at) VALUES (?, ?, ?, ?, ?, NOW())`, [campaignId, donorName, donorEmail, amount, notes] );
 
 const donationId = donationResult.insertId;
 

@@ -141,9 +141,9 @@ const CardSection = ({ totalRaised, totalDonors, campaigns = [], selectedCampaig
             </div>
 
             <div className='bg-white rounded-[20px] pt-9 pl-[38px] pr-[42px] pb-[54px] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]'>
-                <div className='flex items-start justify-between mb-[9px]'>
+                <div className='flex items-start justify-between mb-[9px] hidden'>
                     <p className='text-xl font-poppins font-medium text-black'>Status</p>
-                    <div className='flex flex-col gap-[7px] items-end justify-end'>
+                    <div className='flex flex-col gap-[7px] items-end justify-end hid'>
                         <MySwitch setChecked={setChecked} checked={checked} campId={selectedCampaign?.campaign_id} campStatus={campStatus} />
                         <span className={`text-xs font-medium ${checked ? "text-green-600" : "text-yellow-500"
                             }`}>

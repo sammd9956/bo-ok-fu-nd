@@ -208,7 +208,7 @@ totalDonors);
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-[21px] pb-[18px] pr-[60px] pl-[38px] bg-outline-border border-b-[0.5px] border-solid border-b-black">
         <h2 className="text-3xl font-bold text-white">
-          Donations (0)
+          Donations ({donation.length})
         </h2>
         
         {/* Search */}

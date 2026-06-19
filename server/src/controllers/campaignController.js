@@ -7,6 +7,9 @@ import { checkCampaignExpired } from "../services/campaigns/campaignValidation.j
 
 const createNewCompaign = TryCatch(async (req, res, next) => {
     const {campName, campType, startDate, endDate, goalAmount, message} = req.body;
+    if(!campName || !campType || !startDate || !endDate || !goalAmount){
+        return next(new ErrorHandler("All fields are required", 400))
+    }
     const id = req.user.id;
     console.log("funnn", id);
     const fundCode = uuidv4();
@@ -21,7 +24,6 @@ const createNewCompaign = TryCatch(async (req, res, next) => {
     //get campaign
     const getCampaign = TryCatch(async(req, res, next) => {
         const rows = await getMyCampaignsService(req.user.id)
-        console.log("11111111", rows);
         
         res.status(200).json({success: true, message: "ok", campaigns: rows})
     })

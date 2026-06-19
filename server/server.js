@@ -25,7 +25,7 @@ async function serverStart() {
 
   const pool = await connectDB();   
 
-  await runMigrations(pool);        
+  // await runMigrations(pool);        
 
   
 
